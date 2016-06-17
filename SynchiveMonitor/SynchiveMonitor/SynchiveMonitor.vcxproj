@@ -142,7 +142,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="DirectoryProcessor.h" />
-    <ClInclude Include="Utilities.h" />
+    <ClInclude Include="Globals.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />
@@ -159,7 +159,6 @@
     </ClCompile>
     <ClCompile Include="DirectoryProcessor.cpp" />
     <ClCompile Include="SynchiveMonitor.cpp" />
-    <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />

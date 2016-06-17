@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
-#include "Utilities.h"
+#include "Globals.h"
 #include "DirectoryProcessor.h"
 
 ref class DirectoryMonitor

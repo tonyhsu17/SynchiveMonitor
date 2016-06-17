@@ -8,8 +8,8 @@ public:
 	DirectoryProcessor(String^ path);
 	void addFile(String^ id);
 
-	virtual void didProcessFile(String^ filePath, int level, String^ crc) override;
-	virtual void willProcessDirectory(SynchiveDirectory^ dir) override;
+	virtual void didProcessFile(String^ id, String^ path, int depth, String^ crc) override;
+	virtual void willProcessDirectory(String^ id, String^ path, int depth) override;
 
 	static void fileCreated(Object^ sender, FileSystemEventArgs^ e);
 	static void fileDeleted(Object^ sender, FileSystemEventArgs^ e);

@@ -39,14 +39,14 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files\support</Filter>
     </ClInclude>
-    <ClInclude Include="Utilities.h">
-      <Filter>Header Files\support</Filter>
-    </ClInclude>
     <ClInclude Include="FileProcessorBase.h">
       <Filter>Header Files\fileManagement</Filter>
     </ClInclude>
     <ClInclude Include="DirectoryProcessor.h">
       <Filter>Header Files\fileManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.h">
+      <Filter>Header Files\support</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -65,9 +65,6 @@
       <Filter>Source Files\support</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files\support</Filter>
-    </ClCompile>
-    <ClCompile Include="Utilities.cpp">
       <Filter>Source Files\support</Filter>
     </ClCompile>
     <ClCompile Include="FileProcessorBase.cpp">

@@ -12,15 +12,15 @@ void DirectoryProcessor::addFile(String ^ id)
 	fileList->Add(id, 1);
 }
 
-void DirectoryProcessor::didProcessFile(String^ filePath, int level, String^ crc)
+void DirectoryProcessor::didProcessFile(String^ id, String^ path, int depth, String^ crc)
 {
-	Console::WriteLine("@didProcessFile: " + filePath + " level: " + level + " crc: " + crc);
+	Console::WriteLine("@didProcessFile: " + id + " level: " + depth);
 	//throw gcnew System::NotImplementedException();
 }
 
-void DirectoryProcessor::willProcessDirectory(SynchiveDirectory^ dir)
+void DirectoryProcessor::willProcessDirectory(String^ id, String^ path, int depth)
 {
-	Console::WriteLine("@willProcessDirectory: " + dir->path + " level: " + dir->depth);
+	Console::WriteLine("@willProcessDirectory: " + id);
 	//throw gcnew System::NotImplementedException();
 }
 

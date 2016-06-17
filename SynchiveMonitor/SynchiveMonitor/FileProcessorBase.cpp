@@ -34,7 +34,7 @@ void FileProcessorBase::readinIDs()
 		if (idFiles->Length == 0)
 		{
 			String^ dirID = getDirectoryUniqueID(dir->path, dir->depth, root.path);
-			willProcessDirectory(dir);
+			willProcessDirectory(dirID, dir->path, dir->depth);
 			readFilesWithinDirectory(dir);
 		}
 		else
@@ -49,28 +49,39 @@ void FileProcessorBase::readinIDs()
 				Console::WriteLine(e->Message);
 			}
 		}
+
+		// if dir != root, delete
+		if (dir != root)
+		{
+			delete dir;
+		}
 	}
-
-
-	/*String^ line;
-
-	line = reader->ReadLine();
-	while (line != nullptr)
-	{
-
-		line = reader->ReadLine();
-	}*/
 }
 
-// Get the UniqueID of a directory.
-String ^ FileProcessorBase::getDirectoryUniqueID(String ^ filePath, int level, String ^ rootPath)
-{
-	return "~" + level + ": " + filePath->Substring(rootPath->Length);
-}
 
 void FileProcessorBase::readFilesWithinDirectory(SynchiveDirectory^ dir)
 {
-	throw gcnew System::NotImplementedException();
+	for each (String^ subDir in Directory::GetDirectories(dir->path))
+	{
+		// there is no need to skip folder as the copier will exclude them
+		if (subDir != kLeftoverFolderName)
+		{
+			SynchiveDirectory^ tempDir = gcnew SynchiveDirectory;
+			tempDir->path = subDir;
+			tempDir->depth = dir->depth + 1;
+			directoriesToProcess->Push(tempDir);
+		}
+	}
+	for each (String^ file in Directory::GetFiles(dir->path))
+	{
+		// create new file entry
+		
+		if (file != kIDFileName)
+		{
+			String^ crcVal = calculateCRC32(file);
+			didProcessFile("", file, dir->depth, crcVal);
+		}
+	}
 }
 
 void FileProcessorBase::readFromIDFile(String ^ path, int baseDepth)
@@ -114,6 +125,8 @@ void FileProcessorBase::readFromIDFile(String ^ path, int baseDepth)
 		String^ path = locationDir + splitDir[1];
 		String^ dirID = getDirectoryUniqueID(path, newLevel, root.path);
 
+		willProcessDirectory(dirID, path, newLevel);
+
 		str = sc->ReadLine();
 		while (str != nullptr && !str->StartsWith(kDirLinePrefix))
 		{
@@ -127,12 +140,32 @@ void FileProcessorBase::readFromIDFile(String ^ path, int baseDepth)
 			}
 			// reconstruct file path (root path + directory path + fileName)
 			String^ fileLoc = locationDir + splitDir[1] + "\\" +
-				splitStr[1]->Substring(1, splitStr[1]->Length - 1);
-			
-			didProcessFile(fileLoc, newLevel, splitStr[0]); // abstract method
+				splitStr[1]->Substring(1, splitStr[1]->Length - 2); // null terminated counted?
+			FileInfo^ info = gcnew FileInfo(fileLoc);
+			didProcessFile(getFileUniqueID(info->Name, splitStr[0]), fileLoc, newLevel, splitStr[0]); // abstract method
+			delete info;
 			str = sc->ReadLine();
 		}
 	}
 	sc->Close();
 	delete sc;
+}
+
+String^ FileProcessorBase::getFileUniqueID(String^ name, String^ crc)
+{
+	return crc + " \"" + name + "\"";
+}
+
+// Get the UniqueID of a directory.
+String ^ FileProcessorBase::getDirectoryUniqueID(String ^ filePath, int level, String ^ rootPath)
+{
+	return "~" + level + ": " + filePath->Substring(rootPath->Length);
+}
+
+
+String ^ FileProcessorBase::calculateCRC32(String ^ file)
+{
+	
+	throw gcnew System::NotImplementedException();
+	// TODO: insert return statement here
 }

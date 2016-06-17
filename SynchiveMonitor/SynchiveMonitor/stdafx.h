@@ -6,7 +6,7 @@
 #pragma once
 // TODO: reference additional headers your program requires here
 
-#include "Utilities.h"
+#include "Globals.h"
 
 using namespace System;
 using namespace System::IO;
