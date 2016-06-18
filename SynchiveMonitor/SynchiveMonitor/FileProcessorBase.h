@@ -22,12 +22,12 @@ public:
 
 	static String^ getDirectoryUniqueID(String^ filePath, int level, String^ rootPath);
 	static String^ getFileUniqueID(String^ name, String^ crc);
-private:
 
-	Hashtable^ directoyMapping;
-	StreamReader^ reader;
-	Stack^ directoriesToProcess;
-	SynchiveDirectory root;
+private:
+	property Hashtable^ directoyMapping;
+	property StreamReader^ reader;
+	property Stack^ directoriesToProcess;
+	property SynchiveDirectory root;
 
 	
 	void readFilesWithinDirectory(SynchiveDirectory^ dir);

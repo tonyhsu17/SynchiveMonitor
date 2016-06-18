@@ -9,7 +9,8 @@ ref class DirectoryMonitor
 public:
 	DirectoryMonitor();
 	int run();
+
 private:
-	FileSystemWatcher^ monitor;
+	property FileSystemWatcher^ monitor;
 };
 

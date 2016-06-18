@@ -89,7 +89,6 @@ void FileProcessorBase::readFromIDFile(String ^ path, int baseDepth)
 	Console::WriteLine("@readFromIDFile");
 	StreamReader^ sc = gcnew StreamReader(path);
 	String^ str = sc->ReadLine(); // strip out header
-
 	if (str == nullptr) // in-case of empty file
 	{
 		sc->Close();

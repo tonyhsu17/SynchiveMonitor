@@ -137,6 +137,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CRC32.h" />
     <ClInclude Include="DirectoryMonitor.h" />
     <ClInclude Include="FileProcessorBase.h" />
     <ClInclude Include="resource.h" />
@@ -149,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="CRC32.cpp" />
     <ClCompile Include="DirectoryMonitor.cpp" />
     <ClCompile Include="FileProcessorBase.cpp" />
     <ClCompile Include="stdafx.cpp">

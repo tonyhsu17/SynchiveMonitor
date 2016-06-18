@@ -4,13 +4,6 @@
 #define kIDFileName "~listOfFilesInCRC.txt"
 #define kDirLinePrefix "~"
 #define kLeftoverFolderName "~leftovers"
-
-ref class UtilitiesBak
-{
-public:
-	//String ^ calculateCRC32(String ^ file);
-	//static String^ calculateCRC32(String^ file);
-private:
-
-
-};
+#define kKiloByte 1024
+#define kMegaByte 1048576
+#define kBufferSize 4 * kMegaByte
