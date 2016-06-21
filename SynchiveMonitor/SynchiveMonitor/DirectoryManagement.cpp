@@ -30,9 +30,9 @@ void DirectoryManagement::willProcessDirectory(String^ id, String^ path, int dep
 
 void DirectoryManagement::fileCreated(FileSystemEventArgs ^ e)
 {
-	Console::WriteLine("FileCreated: " + e->FullPath);
 	if (e->Name != kIDFileName)
 	{
+		Console::WriteLine("FileCreated: " + e->FullPath);
 		processingQueue->Enqueue(e->FullPath);
 	}
 }
@@ -42,34 +42,25 @@ void DirectoryManagement::fileDeleted(FileSystemEventArgs ^ e)
 	String^ path = e->FullPath;
 	Console::WriteLine("FileDeleted: " + path);
 
-	if (Directory::Exists(path)) // check if directory or file
-	{
-		//DirectoryInfo^ info = gcnew DirectoryInfo(path);
-		int depth = getDepth(path, root->path);
-		String^ id = getDirectoryUniqueID(path, depth, root->path);
-		
-		// get all files in directory and remove them
-		Hashtable^ fileList = (Hashtable^)directoryList[id]; 
-		delete fileList;
-		directoryList->Remove(id);
-		directoryModified = true;
-	}
-	else if(File::Exists(path))
-	{
-		FileInfo^ info = gcnew FileInfo(path);
-		int depth = getDepth(path, root->path);
-		String^ dirID = getDirectoryUniqueID(info->Directory->FullName, depth, root->path);
+	int depth = getDepth(path, root->path);
+	String^ id = getDirectoryUniqueID(path, depth, root->path);
 
-		Hashtable^ fileList = (Hashtable^)directoryList[dirID];
-		fileList->Remove(info->Name);
-		directoryModified = true;
+	if (directoryList->Contains(id))
+	{
+		// directory found, now remove directory + fileList AND 
+		// somehow find subdirectories and remove those too
+	}
+	else
+	{
+		Hashtable^ fileList = (Hashtable^)directoryList[id];
+		//fileList->Remove("NAME"); // TODO: proper name
 	}
 }
 
 void DirectoryManagement::fileRenamed(RenamedEventArgs ^ e)
 {
 	String^ path = e->FullPath;
-	String^ oldPath = e->FullPath;
+	String^ oldPath = e->OldFullPath;
 	Console::WriteLine("FileRenamed: " + e->FullPath + " from: " + e->OldFullPath);
 	if (Directory::Exists(path)) // check if directory or file
 	{
@@ -78,21 +69,24 @@ void DirectoryManagement::fileRenamed(RenamedEventArgs ^ e)
 		int oldDepth = getDepth(oldPath, root->path);
 		String^ oldID = getDirectoryUniqueID(oldPath, depth, root->path);
 
-		Hashtable^ fileList = (Hashtable^)directoryList[id];
+		Hashtable^ fileList = (Hashtable^)directoryList[oldID];
 		directoryList->Add(id, fileList);
 		directoryList->Remove(oldID);
 		directoryModified = true;
+
+		// TODO: handle sub dirs
 	}
 	else if(File::Exists(path))
 	{
 		FileInfo^ info = gcnew FileInfo(path);
+		FileInfo^ oldInfo = gcnew FileInfo(oldPath);
 		int depth = getDepth(path, root->path);
 		String^ dirID = getDirectoryUniqueID(info->Directory->FullName, depth, root->path);
 
-		Hashtable^ fileList = (Hashtable^)directoryList[dirID];
-		String^ crc = (String^)fileList[info->Name];
-		fileList->Remove(e->OldName);
+		Hashtable^ fileList = (Hashtable^)directoryList[dirID]; // get fileList
+		String^ crc = (String^)fileList[oldInfo->Name]; // get crc
 		fileList->Add(e->Name, crc);
+		fileList->Remove(e->OldName);
 		directoryModified = true;
 	}
 }
@@ -139,7 +133,14 @@ void DirectoryManagement::processQueue()
 						directoryList->Add(dirID, gcnew Hashtable());
 					}
 					Hashtable^ fileList = (Hashtable^)directoryList[dirID];
-					fileList->Add(fileInfo->Name, crc);
+					if (fileList->Contains(fileInfo->Name))
+					{
+						fileList[fileInfo->Name] = crc;
+					}
+					else
+					{
+						fileList->Add(fileInfo->Name, crc);
+					}
 					directoryModified = true;
 
 					Console::WriteLine("@processQueue: " + path);
@@ -158,6 +159,10 @@ void DirectoryManagement::processQueue()
 
 void DirectoryManagement::writeToFile()
 {
+	if (!directoryModified)
+	{
+		return;
+	}
 	directoryModified = false;
 	Console::WriteLine("@Writting to file");
 	String^ idFilePath = root->path + "\\" + kIDFileName;

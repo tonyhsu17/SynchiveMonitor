@@ -25,6 +25,12 @@
     <Filter Include="Source Files\support">
       <UniqueIdentifier>{02d533eb-7919-469a-9201-f906ca5a21a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\SynchiveMonitor">
+      <UniqueIdentifier>{e795b24b-1c57-4d61-8036-a81898cb1f03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SynchiveMonitor">
+      <UniqueIdentifier>{6fadfb04-8ba1-47b6-a853-411903693934}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -58,12 +64,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SynchiveMonitor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectoryMonitor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AssemblyInfo.cpp">
       <Filter>Source Files\support</Filter>
     </ClCompile>
@@ -78,6 +78,12 @@
     </ClCompile>
     <ClCompile Include="DirectoryManagement.cpp">
       <Filter>Source Files\fileManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectoryMonitor.cpp">
+      <Filter>Source Files\SynchiveMonitor</Filter>
+    </ClCompile>
+    <ClCompile Include="SynchiveMonitor.cpp">
+      <Filter>Source Files\SynchiveMonitor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

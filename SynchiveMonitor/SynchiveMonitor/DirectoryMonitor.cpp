@@ -27,7 +27,7 @@ DirectoryMonitor::DirectoryMonitor(String^ path)
 	monitor->Renamed += gcnew RenamedEventHandler(DirectoryMonitor::fileRenamed);
 
 	// Add processing timer
-	timer = gcnew Timer(kMinute);
+	timer = gcnew Timer(kScheduledTimer);
 	timer->BeginInit();
 	timer->AutoReset = true;
 	timer->Elapsed += gcnew ElapsedEventHandler(handleTimer);
@@ -38,7 +38,11 @@ int DirectoryMonitor::run()
 {
 	monitor->EnableRaisingEvents = true;
 	timer->Start();
-	while (true);
+
+	while (true)
+	{
+		System::Threading::Thread::Sleep(60 * kMinute);
+	}
 	return 0;
 }
 

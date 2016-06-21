@@ -11,6 +11,6 @@
 
 #define kSecond 1000
 #define kMinute 60 * kSecond
-#define k5Minutes 5 * kMinute
+#define kScheduledTimer 1 * kMinute
 
 #define kCRC32Length 8

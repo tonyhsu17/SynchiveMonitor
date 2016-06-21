@@ -236,6 +236,16 @@ int FileProcessorBase::getDepth(String ^ path, String ^ root)
 	filter[0] = '\\';
 	array<String^>^ splitPath = relativePath->Split(filter);
 	int depth = splitPath->Length - 2; // subtract additional one from empty String in index 0
+	delete filter;
 	Console::WriteLine("@depth: " + depth + " - path: " + path + " root: " + root);
-	return depth; //WTF? another -2
+	return depth;
+}
+
+String^ FileProcessorBase::getName(String^ path)
+{
+	array<wchar_t>^ filter = gcnew array<wchar_t>(1);
+	filter[0] = '\\';
+	array<String^>^ splitPath = path->Split(filter);
+	delete filter;
+	return splitPath[splitPath->Length - 1];
 }
