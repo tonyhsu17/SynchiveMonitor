@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "CRC32.h"
 
 ref class FileProcessorBase abstract
 {
@@ -14,24 +15,30 @@ public:
 		int depth;
 	};
 
+	
+
 	FileProcessorBase(String^ path);
 	void readinIDs();
 
-	virtual void didProcessFile(String^ id, String^ path, int depth, String^ crc) abstract;
+	virtual void didProcessFile(String^ id, String^ dirID, String^ path, int depth, String^ crc) abstract;
 	virtual void willProcessDirectory(String^ id, String^ path, int depth) abstract;
 
 	static String^ getDirectoryUniqueID(String^ filePath, int level, String^ rootPath);
 	static String^ getFileUniqueID(String^ name, String^ crc);
-
+	static SynchiveDirectory^ getSynchiveDirectory(String^ id, String^ root);
+	static SynchiveFile^ getSynchiveFile(String^ id, String^ parent);
+	static String^ calculateCRC32(String^ file);
+	static int getDepth(String^ path, String^ root);
+protected:
+	property SynchiveDirectory^ root;
 private:
 	property Hashtable^ directoyMapping;
 	property StreamReader^ reader;
 	property Stack^ directoriesToProcess;
-	property SynchiveDirectory root;
-
 	
+
 	void readFilesWithinDirectory(SynchiveDirectory^ dir);
 	void readFromIDFile(String^ path, int baseDepth);
-	String^ calculateCRC32(String^ file);
+	
 };
 

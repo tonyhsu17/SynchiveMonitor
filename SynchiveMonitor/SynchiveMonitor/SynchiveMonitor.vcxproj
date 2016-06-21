@@ -142,7 +142,7 @@
     <ClInclude Include="FileProcessorBase.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="DirectoryProcessor.h" />
+    <ClInclude Include="DirectoryManagement.h" />
     <ClInclude Include="Globals.h" />
   </ItemGroup>
   <ItemGroup>
@@ -159,7 +159,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="DirectoryProcessor.cpp" />
+    <ClCompile Include="DirectoryManagement.cpp" />
     <ClCompile Include="SynchiveMonitor.cpp" />
   </ItemGroup>
   <ItemGroup>

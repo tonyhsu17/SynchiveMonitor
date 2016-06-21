@@ -83,16 +83,37 @@ CRC32::CRC32()
 //open every file as binary
 String ^ CRC32::computeHash(String ^ filePath)
 {
-	FileStream^ fs = gcnew FileStream(filePath, FileMode::Open);
-	BinaryReader^ br = gcnew BinaryReader(fs, System::Text::Encoding::UTF8);
+	String^ crcValue;
+	FileStream^ fs;
+	BinaryReader^ br;
 
-	String^ crcValue = computeHash(br);
+	try
+	{
+		fs = gcnew FileStream(filePath, FileMode::Open);
+		br = gcnew BinaryReader(fs, System::Text::Encoding::UTF8);
 
-	br->Close();
-	fs->Close();
+		crcValue = computeHash(br);
+		
+	}
+	catch (FileNotFoundException^ e)
+	{
+		crcValue = nullptr;
+	}
+	catch (IOException^ e)
+	{
+		throw gcnew IOException("File in use");
+	}
+
+	if (br != nullptr)
+	{
+		br->Close();
+	}
+	if (fs != nullptr)
+	{
+		fs->Close();
+	}
 	delete br;
 	delete fs;
-	
 	return crcValue;
 }
 
@@ -127,6 +148,11 @@ void CRC32::updateCRC32(array<Byte>^ buffer, int count)
 String^ CRC32::ToString()
 {
 	unsigned long finalCRC = value ^ 0xFFFFFFFF;
-	return finalCRC.ToString("X");
+	String^ crc = finalCRC.ToString("X");
+	for (int i = crc->Length; i < kCRC32Length; i++)
+	{
+		crc = "0" + crc;
+	}
+	return crc;
 }
 

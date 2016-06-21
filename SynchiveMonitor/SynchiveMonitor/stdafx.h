@@ -9,5 +9,6 @@
 #include "Globals.h"
 
 using namespace System;
+using namespace System::Timers;
 using namespace System::IO;
 using namespace Collections;
