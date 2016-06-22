@@ -28,8 +28,9 @@ public:
 	static SynchiveDirectory^ getSynchiveDirectory(String^ id, String^ root);
 	static SynchiveFile^ getSynchiveFile(String^ id, String^ parent);
 	static String^ calculateCRC32(String^ file);
-	static int getDepth(String^ path, String^ root);
-	static String^ FileProcessorBase::getName(String^ path);
+	static int getDepth(String^ path, String^ root, Boolean isFile);
+	static String^ getRelativePath(String^ path, String^ basePath);
+	
 protected:
 	property SynchiveDirectory^ root;
 private:

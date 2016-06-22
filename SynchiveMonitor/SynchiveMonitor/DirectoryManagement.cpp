@@ -42,7 +42,7 @@ void DirectoryManagement::fileDeleted(FileSystemEventArgs ^ e)
 	String^ path = e->FullPath;
 	Console::WriteLine("FileDeleted: " + path);
 
-	int depth = getDepth(path, root->path);
+	int depth = getDepth(path, root->path, true);
 	String^ id = getDirectoryUniqueID(path, depth, root->path);
 
 	if (directoryList->Contains(id))
@@ -64,31 +64,50 @@ void DirectoryManagement::fileRenamed(RenamedEventArgs ^ e)
 	Console::WriteLine("FileRenamed: " + e->FullPath + " from: " + e->OldFullPath);
 	if (Directory::Exists(path)) // check if directory or file
 	{
-		int depth = getDepth(path, root->path);
-		String^ id = getDirectoryUniqueID(path, depth, root->path);
-		int oldDepth = getDepth(oldPath, root->path);
-		String^ oldID = getDirectoryUniqueID(oldPath, depth, root->path);
-
-		Hashtable^ fileList = (Hashtable^)directoryList[oldID];
-		directoryList->Add(id, fileList);
-		directoryList->Remove(oldID);
-		directoryModified = true;
-
-		// TODO: handle sub dirs
+		DirectoryInfo^ parent = gcnew DirectoryInfo(path);
+		handleDirectoryRename(path, parent->FullName, oldPath);
+		delete parent;
+		
 	}
 	else if(File::Exists(path))
 	{
 		FileInfo^ info = gcnew FileInfo(path);
-		FileInfo^ oldInfo = gcnew FileInfo(oldPath);
-		int depth = getDepth(path, root->path);
+		FileInfo^ oldInfo = gcnew FileInfo(oldPath); // able to retrieve name from invalid path
+		int depth = getDepth(path, root->path, true);
 		String^ dirID = getDirectoryUniqueID(info->Directory->FullName, depth, root->path);
 
 		Hashtable^ fileList = (Hashtable^)directoryList[dirID]; // get fileList
 		String^ crc = (String^)fileList[oldInfo->Name]; // get crc
-		fileList->Add(e->Name, crc);
-		fileList->Remove(e->OldName);
+		Console::WriteLine("NAME:" + e->Name + " old:" + e->OldName + " crc:" + crc);
+		fileList->Add(info->Name, crc);
+		fileList->Remove(oldInfo->Name);
 		directoryModified = true;
 	}
+}
+
+void DirectoryManagement::handleDirectoryRename(String^ path, String^ newBasePath, String^ oldBasePath)
+{
+	DirectoryInfo^ info = gcnew DirectoryInfo(path); // info of current dir
+	array<DirectoryInfo^>^ subDir = info->GetDirectories(); // list of sub dir
+	for each(DirectoryInfo^ tempDir in subDir)
+	{
+		handleDirectoryRename(tempDir->FullName, newBasePath, oldBasePath); // recurse through each sub dir
+	}
+
+	String^ oldPath = oldBasePath + getRelativePath(path, newBasePath); // reconstruct original path
+	
+	int oldDepth = getDepth(path, root->path, false); // depth cannot change from renaming
+	String^ oldID = getDirectoryUniqueID(oldPath, oldDepth, root->path); // get originalID
+	String^ id = getDirectoryUniqueID(path, oldDepth, root->path); // get newID
+
+	Console::WriteLine("@newID:" + id + " old: " + oldID);
+	Hashtable^ fileList = (Hashtable^)directoryList[oldID];
+
+	directoryList->Add(id, fileList);
+	directoryList->Remove(oldID);
+	directoryModified = true;
+
+	delete info;
 }
 
 void DirectoryManagement::processQueue()
@@ -103,7 +122,7 @@ void DirectoryManagement::processQueue()
 			if (Directory::Exists(path)) // check if directory or file
 			{
 				DirectoryInfo^ info = gcnew DirectoryInfo(path);
-				int depth = getDepth(path, root->path);
+				int depth = getDepth(path, root->path, true);
 				String^ id = getDirectoryUniqueID(path, depth, root->path);
 
 				array<DirectoryInfo^>^ subDirs = info->GetDirectories();
@@ -125,7 +144,7 @@ void DirectoryManagement::processQueue()
 				String^ crc = calculateCRC32(path);
 				if (crc != nullptr) {
 					String^ fileID = getFileUniqueID(fileInfo->Name, crc);
-					int depth = getDepth(path, root->path);
+					int depth = getDepth(path, root->path, true);
 					String^ dirID = getDirectoryUniqueID(fileInfo->Directory->FullName, depth, root->path);
 					Console::WriteLine("@dirID: " + dirID);
 					if (!directoryList->Contains(dirID)) //create fileList hashtable

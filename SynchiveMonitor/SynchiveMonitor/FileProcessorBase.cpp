@@ -229,23 +229,27 @@ String ^ FileProcessorBase::calculateCRC32(String ^ file)
 	return crcVal;
 }
 
-int FileProcessorBase::getDepth(String ^ path, String ^ root)
+int FileProcessorBase::getDepth(String ^ path, String ^ root, Boolean isFile)
 {
 	String^ relativePath = path->Substring(root->Length);
 	array<wchar_t>^ filter = gcnew array<wchar_t>(1);
 	filter[0] = '\\';
 	array<String^>^ splitPath = relativePath->Split(filter);
-	int depth = splitPath->Length - 2; // subtract additional one from empty String in index 0
+	int depth = splitPath->Length - (isFile ? 1 : 0); // subtract one if file since depth is 1 less than path
+	for each(String^ s in splitPath)
+	{
+		if (s->Empty)
+		{
+			depth--; // strip out empty ones
+		}
+	}
 	delete filter;
 	Console::WriteLine("@depth: " + depth + " - path: " + path + " root: " + root);
 	return depth;
 }
 
-String^ FileProcessorBase::getName(String^ path)
+String^ FileProcessorBase::getRelativePath(String^ path, String^ basePath)
 {
-	array<wchar_t>^ filter = gcnew array<wchar_t>(1);
-	filter[0] = '\\';
-	array<String^>^ splitPath = path->Split(filter);
-	delete filter;
-	return splitPath[splitPath->Length - 1];
+	
+	return path->Substring(basePath->Length);
 }

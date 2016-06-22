@@ -23,6 +23,6 @@ private:
 	property Boolean directoryModified; // event flag is need to write to disk
 	//TODO: combine with get directoryList
 
-	
+	void handleDirectoryRename(String^ path, String^ newBasePath, String^ oldBasePath);
 };
 
