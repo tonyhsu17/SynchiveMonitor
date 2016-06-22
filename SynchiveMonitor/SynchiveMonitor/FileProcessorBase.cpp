@@ -64,13 +64,10 @@ void FileProcessorBase::readFilesWithinDirectory(SynchiveDirectory^ dir)
 	for each (String^ subDir in Directory::GetDirectories(dir->path))
 	{
 		// there is no need to skip folder as the copier will exclude them
-		if (subDir != kLeftoverFolderName)
-		{
-			SynchiveDirectory^ tempDir = gcnew SynchiveDirectory;
-			tempDir->path = subDir;
-			tempDir->depth = dir->depth + 1;
-			directoriesToProcess->Push(tempDir);
-		}
+		SynchiveDirectory^ tempDir = gcnew SynchiveDirectory;
+		tempDir->path = subDir;
+		tempDir->depth = dir->depth + 1;
+		directoriesToProcess->Push(tempDir);
 	}
 	for each (String^ file in Directory::GetFiles(dir->path))
 	{
@@ -175,7 +172,7 @@ FileProcessorBase::SynchiveDirectory ^ FileProcessorBase::getSynchiveDirectory(S
 
 	SynchiveDirectory^ dir = gcnew SynchiveDirectory;
 	dir->depth = Int32::Parse(splitDir[0]->Substring(1, 1));
-	dir->path = root + "\\" + splitDir[1];
+	dir->path = root + splitDir[1];
 
 	return dir;
 }
@@ -201,6 +198,8 @@ FileProcessorBase::SynchiveFile ^ FileProcessorBase::getSynchiveFile(String ^ id
 
 	return file;
 }
+
+
 
 // Get the UniqueID of a directory.
 String ^ FileProcessorBase::getDirectoryUniqueID(String ^ filePath, int level, String ^ rootPath)
@@ -238,13 +237,13 @@ int FileProcessorBase::getDepth(String ^ path, String ^ root, Boolean isFile)
 	int depth = splitPath->Length - (isFile ? 1 : 0); // subtract one if file since depth is 1 less than path
 	for each(String^ s in splitPath)
 	{
-		if (s->Empty)
+		if (s->Length == 0) // s->Empty returning true for everything....
 		{
 			depth--; // strip out empty ones
 		}
 	}
 	delete filter;
-	Console::WriteLine("@depth: " + depth + " - path: " + path + " root: " + root);
+	Console::WriteLine("@depth: " + depth + " - path: " + path + " root: " + root + " isFile: " + isFile);
 	return depth;
 }
 

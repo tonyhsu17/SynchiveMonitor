@@ -42,20 +42,54 @@ void DirectoryManagement::fileDeleted(FileSystemEventArgs ^ e)
 	String^ path = e->FullPath;
 	Console::WriteLine("FileDeleted: " + path);
 
-	int depth = getDepth(path, root->path, true);
+	DirectoryInfo^ info = gcnew DirectoryInfo(path);
+	int depth = getDepth(path, root->path, false);
 	String^ id = getDirectoryUniqueID(path, depth, root->path);
+	Console::WriteLine("@ID: " + id);
 
-	if (directoryList->Contains(id))
+	if (directoryList->Contains(id)) // if directory
 	{
-		// directory found, now remove directory + fileList AND 
-		// somehow find subdirectories and remove those too
+		Queue^ keysToRemove = gcnew Queue(); // since we can't modify list while enurmating the list, we store in queue
+		for each(DictionaryEntry de in directoryList)
+		{
+			SynchiveDirectory^ dir = getSynchiveDirectory((String^)de.Key, root->path);
+			Console::WriteLine("@for each dirPath: " + dir->path);
+			if (dir->path->StartsWith(path))
+			{
+				Console::WriteLine("@Removing dir: " + dir->path);
+				Hashtable^ fileList = (Hashtable^)directoryList[(String^)de.Key];
+				delete fileList;
+				keysToRemove->Enqueue(de.Key);
+			}
+			delete dir;
+		}
+		for each(String^ key in keysToRemove)
+		{
+			directoryList->Remove(key);
+		}
+		delete keysToRemove;
 	}
-	else
+	else // else file
 	{
+		FileInfo^ info = gcnew FileInfo(path);
+		int depth = getDepth(path, root->path, true);
+		String^ id = getDirectoryUniqueID(info->Directory->FullName, depth, root->path);
 		Hashtable^ fileList = (Hashtable^)directoryList[id];
-		//fileList->Remove("NAME"); // TODO: proper name
+
+		if (fileList != nullptr) // if file
+		{
+			if (!fileList->Contains(info->Name)) // debug statement
+			{
+				Console::WriteLine("@@@ ERROR file should be found: " + info->Name);
+			}
+			Console::WriteLine("@Found as file");
+			fileList->Remove(info->Name);
+			delete info;
+		}
 	}
+	directoryModified = true;
 }
+
 
 void DirectoryManagement::fileRenamed(RenamedEventArgs ^ e)
 {
@@ -122,7 +156,7 @@ void DirectoryManagement::processQueue()
 			if (Directory::Exists(path)) // check if directory or file
 			{
 				DirectoryInfo^ info = gcnew DirectoryInfo(path);
-				int depth = getDepth(path, root->path, true);
+				int depth = getDepth(path, root->path, false);
 				String^ id = getDirectoryUniqueID(path, depth, root->path);
 
 				array<DirectoryInfo^>^ subDirs = info->GetDirectories();
