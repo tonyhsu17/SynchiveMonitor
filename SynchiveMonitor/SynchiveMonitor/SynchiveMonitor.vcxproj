@@ -141,6 +141,7 @@
     <ClInclude Include="DirectoryMonitor.h" />
     <ClInclude Include="FileProcessorBase.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SchedulerManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="DirectoryManagement.h" />
     <ClInclude Include="Globals.h" />
@@ -153,6 +154,7 @@
     <ClCompile Include="CRC32.cpp" />
     <ClCompile Include="DirectoryMonitor.cpp" />
     <ClCompile Include="FileProcessorBase.cpp" />
+    <ClCompile Include="SchedulerManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
