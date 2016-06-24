@@ -8,7 +8,7 @@ SchedulerManager::SchedulerManager()
 	GetModuleFileName(NULL, buffer, 1024);
 	
 	processPath = gcnew String(buffer);
-	Console::WriteLine(str);
+	Console::WriteLine(processPath);
 /*
 schtasks /create /tn "TEST" /tr "C:\fixStartMenu.ps1" /sc onstart
 */
@@ -16,22 +16,35 @@ schtasks /create /tn "TEST" /tr "C:\fixStartMenu.ps1" /sc onstart
 
 String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ path)
 {
-	if (path != nullptr && Directory::Exists(path))
+	if (path != nullptr && !Directory::Exists(path))
 	{
 		return "Invliad Directory!";
 	}
 
 	String^ arguments = getQueryForType(type, path); // get arguments for task scheduler
+	
+	if (type == SchedulerManager::Query::oneTime)
+	{
+		Process^ p = gcnew Process();
+		ProcessStartInfo^ ps = gcnew ProcessStartInfo(kStoragePath + kFileName , path);
+		p->StartInfo = ps;
+		p->Start();
 
-	Process^ p = gcnew Process();
-	ProcessStartInfo^ ps = gcnew ProcessStartInfo("schtasks", arguments);
-	ps->RedirectStandardOutput = true;
-	ps->UseShellExecute = false;
-	p->StartInfo = ps;
-	p->Start();
+		return "Running One Time!";
+	}
+	else
+	{
+		Process^ p = gcnew Process();
+		ProcessStartInfo^ ps = gcnew ProcessStartInfo("schtasks", arguments);
+		ps->RedirectStandardOutput = true;
+		ps->UseShellExecute = false;
+		p->StartInfo = ps;
+		p->Start();
 
-	StreamReader^ sc = p->StandardOutput;
-	return sc->ReadToEnd();
+		StreamReader^ sc = p->StandardOutput;
+		return sc->ReadToEnd();
+	}
+	
 }
 
 String^ SchedulerManager::getQueryForType(SchedulerManager::Query type, String^ path)
@@ -39,11 +52,11 @@ String^ SchedulerManager::getQueryForType(SchedulerManager::Query type, String^ 
 	Directory::GetCurrentDirectory();
 	String^ arguments = "";
 	String^ convertedPath = path != nullptr ? (kEventSchedulerBase + "\\" + convertPathToInteral(path)) : "";
-	//Console::WriteLine("Query path:" + convertedPath);
+	
 	switch (type)
 	{
 	case SchedulerManager::Query::newLocation:
-		arguments = "/query /create /tn " + convertedPath + " /tr \"" + "\\SYCNHIVEMONTIOR -asd" + "\" /sc onstart";
+		arguments = "/create /tn " + convertedPath + " /tr \"" + kStoragePath + kFileName + "\" /sc onstart";
 		break;
 	case SchedulerManager::Query::oneTime:
 		//arguments = "/query /fo list";
@@ -57,6 +70,7 @@ String^ SchedulerManager::getQueryForType(SchedulerManager::Query type, String^ 
 	default:
 		break;
 	}
+	Console::WriteLine("arguments:" + arguments);
 	return arguments;
 }
 
@@ -94,8 +108,8 @@ ArrayList^ SchedulerManager::parseOutput(String^ str)
 				splitStr = line->Split(' ', 2); // somehow its returning length > 2
 				if (splitStr[0] == "TaskName:")
 				{
-					String^ base = kEventSchedulerBase + "\\";
-					String^ trimmed = splitStr[splitStr->Length - 1]->Substring(base->Length);
+					String^ base = kEventSchedulerBase;
+					String^ trimmed = splitStr[splitStr->Length - 1]->Substring(base->Length + 2); // 2 for '\'Synchive'\'Path
 					output->Add(convertInteraltoPath(trimmed));
 				}
 			}
@@ -104,15 +118,28 @@ ArrayList^ SchedulerManager::parseOutput(String^ str)
 	return output;
 }
 
+void SchedulerManager::validateMonitorFile()
+{
+	//Console::WriteLine(kStoragePath + kFileName);
+	// centralize pl0x
+	if (File::Exists(kStoragePath + kFileName)) // remove older version (centralize version upgrade)
+	{
+		File::Delete(kStoragePath + kFileName);
+	}
+	Directory::CreateDirectory(kStoragePath);
+	File::Copy(processPath, kStoragePath + kFileName); // will not override existing file
+}
 
 String ^ SchedulerManager::newLocation(String ^ path)
 {
+	validateMonitorFile();
 	String^ output = executeCommand(SchedulerManager::Query::newLocation, path);
 	return output;
 }
 
 String ^ SchedulerManager::oneTime(String ^ path)
 {
+	validateMonitorFile();
 	String^ output = executeCommand(SchedulerManager::Query::oneTime, path);
 	return output;
 }
@@ -131,7 +158,7 @@ String ^ SchedulerManager::removeAll()
 
 	for each(String^ path in outputList)
 	{
-		Console::WriteLine(path);
+		//Console::WriteLine(path);
 		output += executeCommand(SchedulerManager::Query::remove, path) + "\n";
 	}
 
@@ -155,6 +182,9 @@ String ^ SchedulerManager::listLocations()
 String ^ SchedulerManager::convertPathToInteral(String^ path)
 {
 	String^ converted = path->Replace("\\", kSlashReplacement);
+	converted = converted->Replace("\/", kSlashReplacement);
+	converted = converted->Replace("\:", kColonReplacement);
+
 	//Console::WriteLine("@convertPathToInteral: " + converted);
 	return converted;
 }
@@ -162,6 +192,7 @@ String ^ SchedulerManager::convertPathToInteral(String^ path)
 String ^ SchedulerManager::convertInteraltoPath(String^ path)
 {
 	String^ converted = path->Replace(kSlashReplacement, "\\");
+	converted = converted->Replace(kColonReplacement, "\:");
 	//Console::WriteLine("@convertInteraltoPath: " + converted );
 	return converted;
 }

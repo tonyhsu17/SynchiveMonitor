@@ -23,6 +23,7 @@ private:
 	String^ processPath;
 
 	ArrayList ^ parseOutput(String ^ str);
+	void validateMonitorFile();
 	String ^ getQueryForType(SchedulerManager::Query type, String^ path);
 
 	String^ convertPathToInteral(String^ path);

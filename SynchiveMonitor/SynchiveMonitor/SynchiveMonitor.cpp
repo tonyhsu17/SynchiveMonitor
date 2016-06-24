@@ -85,10 +85,14 @@ int main(array<System::String ^> ^args)
 				continue;
 			}
 
-			Console::WriteLine("OUTPUT" + output);
+			Console::WriteLine("OUTPUT\n" + output);
 		}
-
-
+	}
+	else if (args->Length == 1) 
+	{
+		// lol this is terrible assumption
+		DirectoryMonitor^ mon = gcnew DirectoryMonitor(args[0]);
+		mon->run();
 	}
 	//*/
 	/*Byte flags = 0;

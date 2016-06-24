@@ -16,9 +16,12 @@
 
 #define kCRC32Length 8
 
-#define kEventSchedulerBase "\\Synchive"
+#define kEventSchedulerBase "Synchive"
 #define kSlashReplacement "%@%@%"
-#define kStorageLocation "%appdata%\\Synchive\\"
+#define kColonReplacement "!#!#!"
+
+#define kStoragePath (Environment::GetFolderPath(Environment::SpecialFolder::ApplicationData) + "\\Synchive\\")
+#define kFileName "SynchiveMonitor v0.1.exe"
 
 #define kNewFlagMask			0x01 // 0000 0001
 #define kRemoveFlagMask			0x02 // 0000 0010
