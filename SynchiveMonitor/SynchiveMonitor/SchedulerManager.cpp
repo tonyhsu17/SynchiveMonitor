@@ -9,13 +9,14 @@ SchedulerManager::SchedulerManager()
 	
 	processPath = gcnew String(buffer);
 	Console::WriteLine(processPath);
-/*
-schtasks /create /tn "TEST" /tr "C:\fixStartMenu.ps1" /sc onstart
-*/
 }
 
 String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ path)
 {
+	if (path != nullptr)
+	{
+		path = path->Replace("\"", ""); // stripe out quoted path
+	}
 	if (path != nullptr && !Directory::Exists(path))
 	{
 		return "Invliad Directory!";
@@ -26,7 +27,8 @@ String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ p
 	if (type == SchedulerManager::Query::oneTime)
 	{
 		Process^ p = gcnew Process();
-		ProcessStartInfo^ ps = gcnew ProcessStartInfo(kStoragePath + kFileName , path);
+		ProcessStartInfo^ ps = gcnew ProcessStartInfo(kStoragePath + kFileName , "\"" + path + "\"");
+		//ps->WindowStyle = Diagnostics::ProcessWindowStyle::Hidden;
 		p->StartInfo = ps;
 		p->Start();
 
@@ -38,6 +40,7 @@ String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ p
 		ProcessStartInfo^ ps = gcnew ProcessStartInfo("schtasks", arguments);
 		ps->RedirectStandardOutput = true;
 		ps->UseShellExecute = false;
+		//ps->WindowStyle = Diagnostics::ProcessWindowStyle::Hidden;
 		p->StartInfo = ps;
 		p->Start();
 
@@ -52,11 +55,12 @@ String^ SchedulerManager::getQueryForType(SchedulerManager::Query type, String^ 
 	Directory::GetCurrentDirectory();
 	String^ arguments = "";
 	String^ convertedPath = path != nullptr ? (kEventSchedulerBase + "\\" + convertPathToInteral(path)) : "";
-	
+	Random^ rando = gcnew Random();
 	switch (type)
 	{
 	case SchedulerManager::Query::newLocation:
-		arguments = "/create /tn " + convertedPath + " /tr \"" + kStoragePath + kFileName + "\" /sc onstart";
+		arguments = "/create /tn " + convertedPath + " /tr \"" + (kStoragePath + kFileName + " " + kSpecialKeyword + " " + path) + "\" /sc onlogon /f /delay 000" + rando->Next(1) + ":" + rando->Next(10,59);
+		
 		break;
 	case SchedulerManager::Query::oneTime:
 		//arguments = "/query /fo list";
@@ -71,6 +75,7 @@ String^ SchedulerManager::getQueryForType(SchedulerManager::Query type, String^ 
 		break;
 	}
 	Console::WriteLine("arguments:" + arguments);
+	delete rando;
 	return arguments;
 }
 
@@ -88,6 +93,8 @@ ArrayList^ SchedulerManager::parseOutput(String^ str)
 	ArrayList^ output = gcnew ArrayList();
 	StringReader^ r = gcnew StringReader(str);
 	String^ line;
+	array<wchar_t>^ filter = gcnew array<wchar_t>(1); // required otherwise split returns more than max substrings
+	filter[0] = ' ';
 	while ((line = r->ReadLine()) != nullptr)
 	{
 		//Console::WriteLine(line);
@@ -95,26 +102,28 @@ ArrayList^ SchedulerManager::parseOutput(String^ str)
 		{
 			continue;
 		}
-		array<String^>^ splitStr = line->Split(' ', 2); // somehow its returning length > 2
+		
+		array<String^>^ splitStr = line->Split(filter , 2);
 		
 		// since system lists by folder, scan per folder
-		if (splitStr[0] == "Folder:" && splitStr[splitStr->Length - 1]->Contains(kEventSchedulerBase))
+		if (splitStr[0] == "Folder:" && splitStr[1]->Contains(kEventSchedulerBase))
 		{
 			// while within folder read each line
 			while ((line = r->ReadLine()) != nullptr && !line->StartsWith("Folder"))
 			{
 				//Console::WriteLine(line);
 
-				splitStr = line->Split(' ', 2); // somehow its returning length > 2
-				if (splitStr[0] == "TaskName:")
+				splitStr = line->Split(filter, 2, StringSplitOptions::RemoveEmptyEntries);
+				if (splitStr->Length > 0 && splitStr[0] == "TaskName:")
 				{
 					String^ base = kEventSchedulerBase;
-					String^ trimmed = splitStr[splitStr->Length - 1]->Substring(base->Length + 2); // 2 for '\'Synchive'\'Path
+					String^ trimmed = splitStr[1]->Substring(base->Length + 2); // 2 for '\'Synchive'\'Path
 					output->Add(convertInteraltoPath(trimmed));
 				}
 			}
 		}
 	}
+	delete filter;
 	return output;
 }
 
@@ -184,7 +193,7 @@ String ^ SchedulerManager::convertPathToInteral(String^ path)
 	String^ converted = path->Replace("\\", kSlashReplacement);
 	converted = converted->Replace("\/", kSlashReplacement);
 	converted = converted->Replace("\:", kColonReplacement);
-
+	converted = converted->Replace(" ", kSpaceReplacement);
 	//Console::WriteLine("@convertPathToInteral: " + converted);
 	return converted;
 }
@@ -193,6 +202,7 @@ String ^ SchedulerManager::convertInteraltoPath(String^ path)
 {
 	String^ converted = path->Replace(kSlashReplacement, "\\");
 	converted = converted->Replace(kColonReplacement, "\:");
+	converted = converted->Replace(kSpaceReplacement, " ");
 	//Console::WriteLine("@convertInteraltoPath: " + converted );
 	return converted;
 }

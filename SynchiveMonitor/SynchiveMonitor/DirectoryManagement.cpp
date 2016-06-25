@@ -11,7 +11,7 @@ DirectoryManagement::DirectoryManagement(String^ path) : FileProcessorBase(path)
 
 void DirectoryManagement::didProcessFile(String^ id, String^ dirID, String^ path, int depth, String^ crc)
 {
-	Console::WriteLine("@didProcessFile: " + id + " level: " + depth);
+	//Console::WriteLine("@didProcessFile: " + id + " level: " + depth);
 	Hashtable^ fileList = (Hashtable^)directoryList[dirID]; // [name, crc]
 	FileInfo^ info = gcnew FileInfo(path);
 	fileList->Add(info->Name, crc); 
@@ -21,7 +21,7 @@ void DirectoryManagement::didProcessFile(String^ id, String^ dirID, String^ path
 
 void DirectoryManagement::willProcessDirectory(String^ id, String^ path, int depth)
 {
-	Console::WriteLine("@willProcessDirectory: " + id);
+	//Console::WriteLine("@willProcessDirectory: " + id);
 	Hashtable^ fileList = gcnew Hashtable();
 
 	directoryList->Add(id, fileList);
@@ -45,7 +45,7 @@ void DirectoryManagement::fileDeleted(FileSystemEventArgs ^ e)
 	DirectoryInfo^ info = gcnew DirectoryInfo(path);
 	int depth = getDepth(path, root->path, false);
 	String^ id = getDirectoryUniqueID(path, depth, root->path);
-	Console::WriteLine("@ID: " + id);
+	//Console::WriteLine("@ID: " + id);
 
 	if (directoryList->Contains(id)) // if directory
 	{
@@ -53,7 +53,7 @@ void DirectoryManagement::fileDeleted(FileSystemEventArgs ^ e)
 		for each(DictionaryEntry de in directoryList)
 		{
 			SynchiveDirectory^ dir = getSynchiveDirectory((String^)de.Key, root->path);
-			Console::WriteLine("@for each dirPath: " + dir->path);
+			//Console::WriteLine("@for each dirPath: " + dir->path);
 			if (dir->path->StartsWith(path))
 			{
 				Console::WriteLine("@Removing dir: " + dir->path);
@@ -82,7 +82,7 @@ void DirectoryManagement::fileDeleted(FileSystemEventArgs ^ e)
 			{
 				Console::WriteLine("@@@ ERROR file should be found: " + info->Name);
 			}
-			Console::WriteLine("@Found as file");
+			//Console::WriteLine("@Found as file");
 			fileList->Remove(info->Name);
 			delete info;
 		}
@@ -112,7 +112,7 @@ void DirectoryManagement::fileRenamed(RenamedEventArgs ^ e)
 
 		Hashtable^ fileList = (Hashtable^)directoryList[dirID]; // get fileList
 		String^ crc = (String^)fileList[oldInfo->Name]; // get crc
-		Console::WriteLine("NAME:" + e->Name + " old:" + e->OldName + " crc:" + crc);
+		//Console::WriteLine("NAME:" + e->Name + " old:" + e->OldName + " crc:" + crc);
 		fileList->Add(info->Name, crc);
 		fileList->Remove(oldInfo->Name);
 		directoryModified = true;
@@ -134,7 +134,7 @@ void DirectoryManagement::handleDirectoryRename(String^ path, String^ newBasePat
 	String^ oldID = getDirectoryUniqueID(oldPath, oldDepth, root->path); // get originalID
 	String^ id = getDirectoryUniqueID(path, oldDepth, root->path); // get newID
 
-	Console::WriteLine("@newID:" + id + " old: " + oldID);
+	//Console::WriteLine("@newID:" + id + " old: " + oldID);
 	Hashtable^ fileList = (Hashtable^)directoryList[oldID];
 
 	directoryList->Add(id, fileList);
@@ -150,7 +150,7 @@ void DirectoryManagement::processQueue()
 	{
 		while (processingQueue->Count > 0)
 		{
-			Console::WriteLine("@Processing Start");
+			//Console::WriteLine("@Processing Start");
 			String^ path = (String^)processingQueue->Peek();
 
 			if (Directory::Exists(path)) // check if directory or file
@@ -180,7 +180,7 @@ void DirectoryManagement::processQueue()
 					String^ fileID = getFileUniqueID(fileInfo->Name, crc);
 					int depth = getDepth(path, root->path, true);
 					String^ dirID = getDirectoryUniqueID(fileInfo->Directory->FullName, depth, root->path);
-					Console::WriteLine("@dirID: " + dirID);
+					//Console::WriteLine("@dirID: " + dirID);
 					if (!directoryList->Contains(dirID)) //create fileList hashtable
 					{
 						directoryList->Add(dirID, gcnew Hashtable());
@@ -196,7 +196,7 @@ void DirectoryManagement::processQueue()
 					}
 					directoryModified = true;
 
-					Console::WriteLine("@processQueue: " + path);
+					//Console::WriteLine("@processQueue: " + path);
 				}
 				
 				delete fileInfo;

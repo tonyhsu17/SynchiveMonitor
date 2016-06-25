@@ -106,10 +106,13 @@ void FileProcessorBase::readFromIDFile(String ^ path, int baseDepth)
 
 	String^ locationDir = Directory::GetParent(file.path)->ToString(); // directory of root
 
+	array<wchar_t>^ filter = gcnew array<wchar_t>(1); // required otherwise split returns more than max substrings
+	filter[0] = ' ';
+
 	str = sc->ReadLine();
 	while (str != nullptr && str->StartsWith(kDirLinePrefix)) // not finished and is a folder
 	{
-		array<String^>^ splitDir = str->Split(' ', 2); // [level, path]
+		array<String^>^ splitDir = str->Split(filter, 2); // [level, path]
 
 		if (splitDir->Length != 2)
 		{
@@ -128,7 +131,7 @@ void FileProcessorBase::readFromIDFile(String ^ path, int baseDepth)
 		str = sc->ReadLine();
 		while (str != nullptr && !str->StartsWith(kDirLinePrefix))
 		{
-			array<String^>^ splitStr = str->Split(' ', 2); // [crc, name]
+			array<String^>^ splitStr = str->Split(filter, 2); // [crc, name]
 
 			if (splitStr->Length != 2)
 			{
@@ -147,6 +150,7 @@ void FileProcessorBase::readFromIDFile(String ^ path, int baseDepth)
 	}
 	sc->Close();
 	delete sc;
+	delete filter;
 }
 
 String^ FileProcessorBase::getFileUniqueID(String^ name, String^ crc)
@@ -156,7 +160,9 @@ String^ FileProcessorBase::getFileUniqueID(String^ name, String^ crc)
 
 FileProcessorBase::SynchiveDirectory ^ FileProcessorBase::getSynchiveDirectory(String ^ id, String^ root)
 {
-	array<String^>^ splitDir = id->Split(' ', 2); // [level, path]
+	array<wchar_t>^ filter = gcnew array<wchar_t>(1); // required otherwise split returns more than max substrings
+	filter[0] = ' ';
+	array<String^>^ splitDir = id->Split(filter, 2); // [level, path]
 	
 	if (splitDir->Length != 2)
 	{
@@ -166,13 +172,15 @@ FileProcessorBase::SynchiveDirectory ^ FileProcessorBase::getSynchiveDirectory(S
 	SynchiveDirectory^ dir = gcnew SynchiveDirectory;
 	dir->depth = Int32::Parse(splitDir[0]->Substring(1, 1));
 	dir->path = root + splitDir[1];
-
+	delete filter;
 	return dir;
 }
 
 FileProcessorBase::SynchiveFile ^ FileProcessorBase::getSynchiveFile(String ^ id, String^ parent)
 {
-	array<String^>^ splitStr = id->Split(' ', 2); // [crc, name]
+	array<wchar_t>^ filter = gcnew array<wchar_t>(1); // required otherwise split returns more than max substrings
+	filter[0] = ' ';
+	array<String^>^ splitStr = id->Split(filter, 2); // [crc, name]
 	
 
 	if (splitStr->Length != 2)
@@ -185,7 +193,7 @@ FileProcessorBase::SynchiveFile ^ FileProcessorBase::getSynchiveFile(String ^ id
 	file->path = parent + "\\" +
 		splitStr[1]->Substring(1, splitStr[1]->Length - 2); // null terminated counted? ;
 	
-
+	delete filter;
 	return file;
 }
 

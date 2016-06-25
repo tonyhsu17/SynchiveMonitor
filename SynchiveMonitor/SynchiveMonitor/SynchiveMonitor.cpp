@@ -55,16 +55,19 @@ int main(array<System::String ^> ^args)
 		array<String^>^ splitStr;
 		String^ output;
 
+		array<wchar_t>^ filter = gcnew array<wchar_t>(1); // required otherwise split returns more than max substrings
+		filter[0] = ' ';
+
 		while ((str = Console::ReadLine()) != "q")
 		{
 			if (str->ToLower()->StartsWith("new"))
 			{
-				splitStr = str->Split(' ', 2);
+				splitStr = str->Split(filter, 2);
 				output = manager->newLocation(splitStr[1]);
 			}
 			else if (str->ToLower()->StartsWith("onetime"))
 			{
-				splitStr = str->Split(' ', 2);
+				splitStr = str->Split(filter, 2);
 				output = manager->oneTime(splitStr[1]);
 			}
 			else if (str->ToLower()->StartsWith("list"))
@@ -77,7 +80,7 @@ int main(array<System::String ^> ^args)
 			}
 			else if (str->ToLower()->StartsWith("remove"))
 			{
-				splitStr = str->Split(' ', 2);
+				splitStr = str->Split(filter, 2);
 				output = manager->removeLocation(splitStr[1]);
 			}
 			else
@@ -87,11 +90,19 @@ int main(array<System::String ^> ^args)
 
 			Console::WriteLine("OUTPUT\n" + output);
 		}
+		delete filter;
 	}
-	else if (args->Length == 1) 
+	else if (args->Length > 0 && args[0] == kSpecialKeyword) 
 	{
+		String^ path = args[1];
+		for (int i = 2; i < args->Length; i++)
+		{
+			path += " " + args[i];
+		}
+		
+		Console::WriteLine("Monitoring: " + path);
 		// lol this is terrible assumption
-		DirectoryMonitor^ mon = gcnew DirectoryMonitor(args[0]);
+		DirectoryMonitor^ mon = gcnew DirectoryMonitor(path);
 		mon->run();
 	}
 	//*/

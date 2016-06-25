@@ -19,12 +19,9 @@
 #define kEventSchedulerBase "Synchive"
 #define kSlashReplacement "%@%@%"
 #define kColonReplacement "!#!#!"
+#define kSpaceReplacement "@#@#@"
 
 #define kStoragePath (Environment::GetFolderPath(Environment::SpecialFolder::ApplicationData) + "\\Synchive\\")
-#define kFileName "SynchiveMonitor v0.1.exe"
+#define kFileName "SynchiveMonitor_v0.1.exe"
 
-#define kNewFlagMask			0x01 // 0000 0001
-#define kRemoveFlagMask			0x02 // 0000 0010
-#define kRemoveAllFlagMask		0x04 // 0000 0100
-#define kListSpecificFlagMask	0x08 // 0000 1000
-#define kListAllFlagMask		0x10 // 0001 0000
+#define kSpecialKeyword "-monitor"
