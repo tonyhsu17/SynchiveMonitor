@@ -50,10 +50,8 @@ void DirectoryManagement::fileDeleted(FileSystemEventArgs ^ e)
 		for each(DictionaryEntry de in directoryList)
 		{
 			SynchiveDirectory^ dir = getSynchiveDirectory((String^)de.Key, root->path);
-			//Console::WriteLine("@for each dirPath: " + dir->path);
 			if (dir->path->StartsWith(path))
 			{
-				Console::WriteLine("@Removing dir: " + dir->path);
 				Hashtable^ fileList = (Hashtable^)directoryList[(String^)de.Key];
 				delete fileList;
 				keysToRemove->Enqueue(de.Key);
@@ -75,11 +73,6 @@ void DirectoryManagement::fileDeleted(FileSystemEventArgs ^ e)
 
 		if (fileList != nullptr) // if file
 		{
-			if (!fileList->Contains(info->Name)) // debug statement
-			{
-				Console::WriteLine("@@@ ERROR file should be found: " + info->Name);
-			}
-			//Console::WriteLine("@Found as file");
 			fileList->Remove(info->Name);
 			delete info;
 		}

@@ -42,7 +42,6 @@ int main(array<System::String ^> ^args)
 	
 	if (args->Length == 0)
 	{
-		//StreamReader^ sc = gcnew StreamReader();
 		Console::WriteLine("Welcome to Synchive Monitor " + kVersion);
 		Console::WriteLine("1 Schedule new monitoring, usage: \"new <path>\""); 
 		Console::WriteLine("2 One time monitoring, usage: \"onetime <path>\"");
@@ -58,6 +57,7 @@ int main(array<System::String ^> ^args)
 		array<wchar_t>^ filter = gcnew array<wchar_t>(1); // required otherwise split returns more than max substrings
 		filter[0] = ' ';
 
+		Console::Write("Input: ");
 		while ((str = Console::ReadLine()) != "q")
 		{
 			if (str->ToLower()->StartsWith("new"))
@@ -88,12 +88,13 @@ int main(array<System::String ^> ^args)
 				continue;
 			}
 
-			Console::WriteLine("OUTPUT\n" + output);
+			Console::WriteLine("Output:\n" + output);
+			Console::Write("\nInput: ");
 		}
 		delete filter;
 	}
-	else if (args->Length > 0 && args[0] == kSpecialKeyword) 
-	{
+	else if (args->Length > 0 && args[0] == kSpecialKeyword)
+	{ 
 		String^ path = args[1];
 		for (int i = 2; i < args->Length; i++)
 		{
@@ -101,23 +102,10 @@ int main(array<System::String ^> ^args)
 		}
 		
 		Console::WriteLine("Monitoring: " + path);
-		// lol this is terrible assumption
+		
 		DirectoryMonitor^ mon = gcnew DirectoryMonitor(path);
 		mon->run();
 	}
-	//*/
-	/*Byte flags = 0;
-
-
-	Process^ p = gcnew Process();
-	ProcessStartInfo^ ps = gcnew ProcessStartInfo("schtasks", "/query /fo list");
-	ps->RedirectStandardOutput = true;
-	ps->UseShellExecute = false;
-	p->StartInfo = ps;
-	p->Start();
-	StreamReader^ sc = p->StandardOutput;
-
-	Console::WriteLine(sc->ReadToEnd());*/
 
 	return 0;
 }
