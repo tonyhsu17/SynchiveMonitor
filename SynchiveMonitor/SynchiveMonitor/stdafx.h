@@ -7,8 +7,13 @@
 // TODO: reference additional headers your program requires here
 
 #include "Globals.h"
+#include <Windows.h>
+//#include <stdio.h>
+//#include <iostream>
+
 
 using namespace System;
 using namespace System::Timers;
+using namespace System::Diagnostics;
 using namespace System::IO;
 using namespace Collections;

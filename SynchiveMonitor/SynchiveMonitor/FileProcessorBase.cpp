@@ -105,7 +105,8 @@ void FileProcessorBase::readFromIDFile(String ^ path, int baseDepth)
 	Console::WriteLine(Directory::GetParent(file.path)->ToString());
 
 	String^ locationDir = Directory::GetParent(file.path)->ToString(); // directory of root
-	array<wchar_t>^ filter = gcnew array<wchar_t>(1);
+
+	array<wchar_t>^ filter = gcnew array<wchar_t>(1); // required otherwise split returns more than max substrings
 	filter[0] = ' ';
 
 	str = sc->ReadLine();
@@ -159,12 +160,10 @@ String^ FileProcessorBase::getFileUniqueID(String^ name, String^ crc)
 
 FileProcessorBase::SynchiveDirectory ^ FileProcessorBase::getSynchiveDirectory(String ^ id, String^ root)
 {
-	array<wchar_t>^ filter = gcnew array<wchar_t>(1);
+	array<wchar_t>^ filter = gcnew array<wchar_t>(1); // required otherwise split returns more than max substrings
 	filter[0] = ' ';
 	array<String^>^ splitDir = id->Split(filter, 2); // [level, path]
 	
-	delete filter;
-
 	if (splitDir->Length != 2)
 	{
 		return nullptr;
@@ -173,17 +172,16 @@ FileProcessorBase::SynchiveDirectory ^ FileProcessorBase::getSynchiveDirectory(S
 	SynchiveDirectory^ dir = gcnew SynchiveDirectory;
 	dir->depth = Int32::Parse(splitDir[0]->Substring(1, 1));
 	dir->path = root + splitDir[1];
-
+	delete filter;
 	return dir;
 }
 
 FileProcessorBase::SynchiveFile ^ FileProcessorBase::getSynchiveFile(String ^ id, String^ parent)
 {
-	array<wchar_t>^ filter = gcnew array<wchar_t>(1);
+	array<wchar_t>^ filter = gcnew array<wchar_t>(1); // required otherwise split returns more than max substrings
 	filter[0] = ' ';
 	array<String^>^ splitStr = id->Split(filter, 2); // [crc, name]
-
-	delete filter;
+	
 
 	if (splitStr->Length != 2)
 	{
@@ -195,7 +193,7 @@ FileProcessorBase::SynchiveFile ^ FileProcessorBase::getSynchiveFile(String ^ id
 	file->path = parent + "\\" +
 		splitStr[1]->Substring(1, splitStr[1]->Length - 2); // null terminated counted? ;
 	
-
+	delete filter;
 	return file;
 }
 
@@ -231,9 +229,7 @@ String ^ FileProcessorBase::calculateCRC32(String ^ file)
 int FileProcessorBase::getDepth(String ^ path, String ^ root, Boolean isFile)
 {
 	String^ relativePath = path->Substring(root->Length);
-	array<wchar_t>^ filter = gcnew array<wchar_t>(1);
-	filter[0] = '\\';
-	array<String^>^ splitPath = relativePath->Split(filter);
+	array<String^>^ splitPath = relativePath->Split('\\');
 	int depth = splitPath->Length - (isFile ? 1 : 0); // subtract one if file since depth is 1 less than path
 	for each(String^ s in splitPath)
 	{
@@ -242,7 +238,6 @@ int FileProcessorBase::getDepth(String ^ path, String ^ root, Boolean isFile)
 			depth--; // strip out empty ones
 		}
 	}
-	delete filter;
 	Console::WriteLine("@depth: " + depth + " - path: " + path + " root: " + root + " isFile: " + isFile);
 	return depth;
 }

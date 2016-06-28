@@ -25,20 +25,17 @@
     <Filter Include="Source Files\support">
       <UniqueIdentifier>{02d533eb-7919-469a-9201-f906ca5a21a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\SynchiveMonitor">
-      <UniqueIdentifier>{e795b24b-1c57-4d61-8036-a81898cb1f03}</UniqueIdentifier>
+    <Filter Include="Source Files\schedulerManagement">
+      <UniqueIdentifier>{6d2f11ab-795e-4fe9-80b7-b024c8e638c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\SynchiveMonitor">
-      <UniqueIdentifier>{6fadfb04-8ba1-47b6-a853-411903693934}</UniqueIdentifier>
+    <Filter Include="Header Files\schedulerManagement">
+      <UniqueIdentifier>{a64914d5-d738-4b5d-a403-8818a33b0047}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DirectoryMonitor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files\support</Filter>
     </ClInclude>
@@ -56,6 +53,12 @@
     </ClInclude>
     <ClInclude Include="DirectoryManagement.h">
       <Filter>Header Files\fileManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectoryMonitor.h">
+      <Filter>Header Files\fileManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="SchedulerManager.h">
+      <Filter>Header Files\schedulerManagement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -79,11 +82,14 @@
     <ClCompile Include="DirectoryManagement.cpp">
       <Filter>Source Files\fileManagement</Filter>
     </ClCompile>
-    <ClCompile Include="DirectoryMonitor.cpp">
-      <Filter>Source Files\SynchiveMonitor</Filter>
-    </ClCompile>
     <ClCompile Include="SynchiveMonitor.cpp">
-      <Filter>Source Files\SynchiveMonitor</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectoryMonitor.cpp">
+      <Filter>Source Files\fileManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="SchedulerManager.cpp">
+      <Filter>Source Files\schedulerManagement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
