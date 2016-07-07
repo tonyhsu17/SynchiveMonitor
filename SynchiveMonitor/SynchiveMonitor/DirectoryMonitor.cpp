@@ -4,6 +4,8 @@
 
 DirectoryMonitor::DirectoryMonitor(String^ path)
 {
+	runWithLatest(path);
+
 	manager = gcnew DirectoryManagement(path);
 	manager->readinIDs();
 
@@ -66,4 +68,38 @@ void DirectoryMonitor::handleTimer(Object^ sender, ElapsedEventArgs^ e)
 	Console::WriteLine("Timer event");
 	manager->processQueue();
 	manager->writeToFile();
+}
+
+void DirectoryMonitor::runWithLatest(String^ path)
+{
+	DirectoryInfo^ dirInfo = gcnew DirectoryInfo(kStoragePath);
+	String^ latestVersion = kVersion;
+	array<String^>^ filter = gcnew array<String^>(1); // required otherwise split returns more than max substrings
+	filter[0] = "_v";
+	String^ extension = kFileNameExtension;
+
+	for each(FileInfo^ fInfo in dirInfo->EnumerateFiles(kFileNamePrefix + "*"))
+	{
+		array<String^>^ splitStr = fInfo->Name->Split(filter, StringSplitOptions::RemoveEmptyEntries);
+		String^ version = splitStr[1]->Substring(0, splitStr[1]->Length - extension->Length);
+		if(Double::Parse(version) > Double::Parse(latestVersion))
+		{
+			latestVersion = version;
+		}
+	}
+	delete filter;
+
+	// if newer version found, start with newer version
+	if(Double::Parse(latestVersion) > Double::Parse(kVersion))
+	{
+		String^ newMonitorPath = kStoragePath + kFileNamePrefix + "v" + latestVersion + kFileNameExtension;
+
+		Process^ p = gcnew Process();
+		ProcessStartInfo^ ps = gcnew ProcessStartInfo(newMonitorPath, kSpecialKeyword + " \"" + path + "\"");
+		ps->WindowStyle = Diagnostics::ProcessWindowStyle::Hidden;
+		p->StartInfo = ps;
+		p->Start();
+
+		exit(0);
+	}
 }

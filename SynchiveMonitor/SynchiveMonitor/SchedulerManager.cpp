@@ -9,6 +9,7 @@ SchedulerManager::SchedulerManager()
 
 	processPath = gcnew String(buffer);
 	Console::WriteLine(processPath);
+	validateMonitorFile();
 }
 
 // creates a new task in task scheduler that will run on login
@@ -184,17 +185,8 @@ ArrayList^ SchedulerManager::parseOutput(String^ str)
 // ensure SynchiveMonitor.exe exist in storage
 void SchedulerManager::validateMonitorFile()
 {
-	// TODO: if file in-use, create file with a diff name
-	// once on next boot, copy over file before starting?
-	// OR dont bother and create new file with diff versioning
-	// so there would be multiple versioning running around
-	// then new option is to upgrade it?
 	try
 	{
-		if(File::Exists(kStoragePath + kFileName)) // remove older version (centralize version upgrade)
-		{
-			File::Delete(kStoragePath + kFileName); // remove everytime for debug purposes
-		}
 		Directory::CreateDirectory(kStoragePath);
 		File::Copy(processPath, kStoragePath + kFileName); // will not override existing file
 	}
@@ -202,6 +194,12 @@ void SchedulerManager::validateMonitorFile()
 	{
 
 	}
+	catch(IOException^ e)
+	{
+
+	}
+	// TODO: check for latest version and use that one
+		//maybe delete old versions too?
 }
 
 // gets a unique taskname to reference
