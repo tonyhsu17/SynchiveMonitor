@@ -92,11 +92,15 @@ void DirectoryMonitor::runWithLatest(String^ path)
 	// if newer version found, start with newer version
 	if(Double::Parse(latestVersion) > Double::Parse(kVersion))
 	{
+		SchedulerManager^ manager = gcnew SchedulerManager();
+		manager->removeLocation(path);
+		manager->newLocation(path, latestVersion);
+
 		String^ newMonitorPath = kStoragePath + kFileNamePrefix + "v" + latestVersion + kFileNameExtension;
 
 		Process^ p = gcnew Process();
 		ProcessStartInfo^ ps = gcnew ProcessStartInfo(newMonitorPath, kSpecialKeyword + " \"" + path + "\"");
-		ps->WindowStyle = Diagnostics::ProcessWindowStyle::Hidden;
+		//ps->WindowStyle = Diagnostics::ProcessWindowStyle::Hidden;
 		p->StartInfo = ps;
 		p->Start();
 

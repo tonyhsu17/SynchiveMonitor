@@ -20,6 +20,13 @@ String^ SchedulerManager::newLocation(String^ path)
 	return output;
 }
 
+String^ SchedulerManager::newLocation(String^ path, String^ version)
+{
+	validateMonitorFile();
+	String^ output = executeCommand(SchedulerManager::Query::newLocation, path, version);
+	return output;
+}
+
 // starts a single instance
 String^ SchedulerManager::oneTime(String^ path)
 {
@@ -68,6 +75,12 @@ String ^ SchedulerManager::listLocations()
 // starts the task through commandline
 String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ path)
 {
+	return executeCommand(type, path, nullptr);
+}
+
+// starts the task through commandline
+String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ path, String^ version)
+{
 	if(path != nullptr)
 	{
 		if(!Directory::Exists(path))
@@ -80,7 +93,7 @@ String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ p
 		}
 	}
 
-	String^ arguments = getArgsForType(type, path); // get arguments for task scheduler
+	String^ arguments = getArgsForType(type, path, version); // get arguments for task scheduler
 
 	if(type == SchedulerManager::Query::oneTime)
 	{
@@ -108,17 +121,18 @@ String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ p
 }
 
 // get the arguments for schtasks
-String^ SchedulerManager::getArgsForType(SchedulerManager::Query type, String^ path)
+String^ SchedulerManager::getArgsForType(SchedulerManager::Query type, String^ path, String^ version)
 {
 	Directory::GetCurrentDirectory();
 	String^ arguments = "";
 	String^ convertedPath = path != nullptr ? (kEventSchedulerBase + "\\" + convertPathToInteral(path)) : "";
+	String^ filePath = kStoragePath + kFileNamePrefix + "v" + (version == nullptr ? kVersion : version) + kFileNameExtension;
 	Random^ rando = gcnew Random();
 	switch(type)
 	{
 	case SchedulerManager::Query::newLocation:
 		// temp delay of 1:01 to 1:59, to lower long in lag
-		arguments = "/create /tn " + convertedPath + " /tr \"" + (kStoragePath + kFileName + " " + kSpecialKeyword + " " + path) + "\" /sc onlogon /f /delay 000" + rando->Next(1) + ":" + rando->Next(10, 59);
+		arguments = "/create /tn " + convertedPath + " /tr \"" + (filePath + " " + kSpecialKeyword + " " + path) + "\" /sc onlogon /f /delay 000" + rando->Next(1) + ":" + rando->Next(10, 59);
 		break;
 	case SchedulerManager::Query::oneTime:
 		break;
