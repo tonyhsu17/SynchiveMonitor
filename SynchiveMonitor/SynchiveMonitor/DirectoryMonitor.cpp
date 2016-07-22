@@ -92,9 +92,10 @@ void DirectoryMonitor::runWithLatest(String^ path)
 	// if newer version found, start with newer version
 	if(Double::Parse(latestVersion) > Double::Parse(kVersion))
 	{
-		SchedulerManager^ manager = gcnew SchedulerManager();
-		manager->removeLocation(path);
-		manager->newLocation(path, latestVersion);
+		// unable to remove task b/c no admin rights
+		//SchedulerManager^ manager = gcnew SchedulerManager();
+		//manager->removeLocation(path);
+		//manager->newLocation(path, latestVersion);
 
 		String^ newMonitorPath = kStoragePath + kFileNamePrefix + "v" + latestVersion + kFileNameExtension;
 
