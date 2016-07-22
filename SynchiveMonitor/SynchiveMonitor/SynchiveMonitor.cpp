@@ -102,13 +102,13 @@ int main(array<System::String ^> ^args)
 		}
 		
 		Console::WriteLine("Monitoring: " + path);
-		
 		DirectoryMonitor^ mon = gcnew DirectoryMonitor(path);
 		mon->run();
 	}
 
 	return 0;
 }
+
 
 
 

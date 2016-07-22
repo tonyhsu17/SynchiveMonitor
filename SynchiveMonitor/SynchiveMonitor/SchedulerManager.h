@@ -13,6 +13,7 @@ public:
 	SchedulerManager();
 
 	String^ newLocation(String^ path); // creates a new task in task scheduler that will run on login
+	String^ newLocation(String^ path, String^ version); // creates a new task in task scheduler with new version
 	String^ oneTime(String^ path); // starts a single instance
 	String^ removeLocation(String^ path); // removes a specific location from task scheduler
 	String^ removeAll(); // all scheduled task
@@ -22,9 +23,10 @@ public:
 private:
 	property String^ processPath; // path of the current process (aka self)
 
-	
 	String^ executeCommand(SchedulerManager::Query type, String ^ path); // starts the task through commandline
-	String^ getArgsForType(SchedulerManager::Query type, String^ path); // get the arguments for schtasks
+	String^ executeCommand(SchedulerManager::Query type, String ^ path, String^ version); // starts the task through commandline
+
+	String^ getArgsForType(SchedulerManager::Query type, String^ path, String^ version); // get the arguments for schtasks
 	
 	ArrayList^ parseOutput(String^ str); // get important information out of schtask output
 

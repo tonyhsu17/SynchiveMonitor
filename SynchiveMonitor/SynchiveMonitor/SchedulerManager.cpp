@@ -9,6 +9,7 @@ SchedulerManager::SchedulerManager()
 
 	processPath = gcnew String(buffer);
 	Console::WriteLine(processPath);
+	validateMonitorFile();
 }
 
 // creates a new task in task scheduler that will run on login
@@ -16,6 +17,13 @@ String^ SchedulerManager::newLocation(String^ path)
 {
 	validateMonitorFile();
 	String^ output = executeCommand(SchedulerManager::Query::newLocation, path);
+	return output;
+}
+
+String^ SchedulerManager::newLocation(String^ path, String^ version)
+{
+	validateMonitorFile();
+	String^ output = executeCommand(SchedulerManager::Query::newLocation, path, version);
 	return output;
 }
 
@@ -67,6 +75,12 @@ String ^ SchedulerManager::listLocations()
 // starts the task through commandline
 String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ path)
 {
+	return executeCommand(type, path, nullptr);
+}
+
+// starts the task through commandline
+String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ path, String^ version)
+{
 	if(path != nullptr)
 	{
 		if(!Directory::Exists(path))
@@ -79,7 +93,7 @@ String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ p
 		}
 	}
 
-	String^ arguments = getArgsForType(type, path); // get arguments for task scheduler
+	String^ arguments = getArgsForType(type, path, version); // get arguments for task scheduler
 
 	if(type == SchedulerManager::Query::oneTime)
 	{
@@ -107,17 +121,18 @@ String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ p
 }
 
 // get the arguments for schtasks
-String^ SchedulerManager::getArgsForType(SchedulerManager::Query type, String^ path)
+String^ SchedulerManager::getArgsForType(SchedulerManager::Query type, String^ path, String^ version)
 {
 	Directory::GetCurrentDirectory();
 	String^ arguments = "";
 	String^ convertedPath = path != nullptr ? (kEventSchedulerBase + "\\" + convertPathToInteral(path)) : "";
+	String^ filePath = kStoragePath + kFileNamePrefix + "v" + (version == nullptr ? kVersion : version) + kFileNameExtension;
 	Random^ rando = gcnew Random();
 	switch(type)
 	{
 	case SchedulerManager::Query::newLocation:
 		// temp delay of 1:01 to 1:59, to lower long in lag
-		arguments = "/create /tn " + convertedPath + " /tr \"" + (kStoragePath + kFileName + " " + kSpecialKeyword + " " + path) + "\" /sc onlogon /f /delay 000" + rando->Next(1) + ":" + rando->Next(10, 59);
+		arguments = "/create /tn " + convertedPath + " /tr \"" + (filePath + " " + kSpecialKeyword + " " + path) + "\" /sc onlogon /f /delay 000" + rando->Next(1) + ":" + rando->Next(10, 59);
 		break;
 	case SchedulerManager::Query::oneTime:
 		break;
@@ -184,17 +199,8 @@ ArrayList^ SchedulerManager::parseOutput(String^ str)
 // ensure SynchiveMonitor.exe exist in storage
 void SchedulerManager::validateMonitorFile()
 {
-	// TODO: if file in-use, create file with a diff name
-	// once on next boot, copy over file before starting?
-	// OR dont bother and create new file with diff versioning
-	// so there would be multiple versioning running around
-	// then new option is to upgrade it?
 	try
 	{
-		if(File::Exists(kStoragePath + kFileName)) // remove older version (centralize version upgrade)
-		{
-			File::Delete(kStoragePath + kFileName); // remove everytime for debug purposes
-		}
 		Directory::CreateDirectory(kStoragePath);
 		File::Copy(processPath, kStoragePath + kFileName); // will not override existing file
 	}
@@ -202,6 +208,12 @@ void SchedulerManager::validateMonitorFile()
 	{
 
 	}
+	catch(IOException^ e)
+	{
+
+	}
+	// TODO: check for latest version and use that one
+		//maybe delete old versions too?
 }
 
 // gets a unique taskname to reference
