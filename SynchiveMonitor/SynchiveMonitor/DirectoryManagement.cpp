@@ -12,6 +12,10 @@ DirectoryManagement::DirectoryManagement(String^ path) : FileProcessorBase(path)
 // only used to read file, no modifing is done
 void DirectoryManagement::didProcessFile(String^ id, String^ dirID, String^ path, int depth, String^ crc)
 {
+	if(!doesRootIDFileExist())
+	{
+		directoryModified = true;
+	}
 	Hashtable^ fileList = (Hashtable^)directoryList[dirID]; // [name, crc]
 	FileInfo^ info = gcnew FileInfo(path);
 	fileList->Add(info->Name, crc); 
@@ -21,8 +25,11 @@ void DirectoryManagement::didProcessFile(String^ id, String^ dirID, String^ path
 // only used to read file, no modifing is done
 void DirectoryManagement::willProcessDirectory(String^ id, String^ path, int depth)
 {
+	if(!doesRootIDFileExist())
+	{
+		directoryModified = true;
+	}
 	Hashtable^ fileList = gcnew Hashtable();
-
 	directoryList->Add(id, fileList);
 }
 
@@ -83,6 +90,10 @@ void DirectoryManagement::fileDeleted(FileSystemEventArgs ^ e)
 
 void DirectoryManagement::fileRenamed(RenamedEventArgs ^ e)
 {
+	// spoof a file created event in case of created file not processed yet gets renamed.
+	FileSystemEventArgs^ spoofedCreated = gcnew FileSystemEventArgs(WatcherChangeTypes::Created, e->FullPath->Substring(0, e->FullPath->Length - e->Name->Length) , e->Name);
+	fileCreated(spoofedCreated);
+
 	String^ path = e->FullPath;
 	String^ oldPath = e->OldFullPath;
 	if (Directory::Exists(path)) // check if directory or file
@@ -90,7 +101,6 @@ void DirectoryManagement::fileRenamed(RenamedEventArgs ^ e)
 		DirectoryInfo^ parent = gcnew DirectoryInfo(path);
 		handleDirectoryRename(path, parent->FullName, oldPath);
 		delete parent;
-		
 	}
 	else if(File::Exists(path))
 	{
@@ -123,11 +133,14 @@ void DirectoryManagement::handleDirectoryRename(String^ path, String^ newBasePat
 	String^ id = getDirectoryUniqueID(path, oldDepth, root->path); // get newID
 
 	Hashtable^ fileList = (Hashtable^)directoryList[oldID];
-
-	directoryList->Add(id, fileList);
-	directoryList->Remove(oldID);
-	directoryModified = true;
-
+	if(fileList != nullptr) 
+	{
+		// check if directory exist first
+		// could be null from a directory created and rename before directory was processed
+		directoryList->Add(id, fileList); // add directory with new name
+		directoryList->Remove(oldID);
+		directoryModified = true;
+	}
 	delete info;
 }
 
@@ -144,6 +157,12 @@ void DirectoryManagement::processQueue()
 				DirectoryInfo^ info = gcnew DirectoryInfo(path);
 				int depth = getDepth(path, root->path, false);
 				String^ id = getDirectoryUniqueID(path, depth, root->path);
+				Hashtable^ test = (Hashtable^)directoryList[id];
+				// don't process is directory already exist
+				if(directoryList->Contains(id))
+				{
+					continue;
+				}
 
 				array<DirectoryInfo^>^ subDirs = info->GetDirectories();
 				for each(DirectoryInfo^ d in subDirs)
@@ -181,9 +200,7 @@ void DirectoryManagement::processQueue()
 						fileList->Add(fileInfo->Name, crc);
 					}
 					directoryModified = true;
-
 				}
-				
 				delete fileInfo;
 			}
 			processingQueue->Dequeue(); // remove from list (not removed initially to account for exceptions)
@@ -206,7 +223,7 @@ void DirectoryManagement::writeToFile()
 	String^ idFilePath = root->path + "\\" + kIDFileName;
 	StreamWriter^ sw = gcnew StreamWriter(idFilePath, false, Text::Encoding::UTF8);
 	
-	sw->WriteLine("Generated with SynchiveMonitor v0.1 - root=" + root->path);
+	sw->WriteLine("Generated with SynchiveMonitor {0} - root=" + root->path, kVersion);
 
 	for each(DictionaryEntry de in directoryList)
 	{

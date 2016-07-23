@@ -15,10 +15,10 @@ public:
 		int depth;
 	};
 
-	
 
 	FileProcessorBase(String^ path);
 	void readinIDs();
+	bool doesRootIDFileExist();
 
 	virtual void didProcessFile(String^ id, String^ dirID, String^ path, int depth, String^ crc) abstract;
 	virtual void willProcessDirectory(String^ id, String^ path, int depth) abstract;
@@ -30,6 +30,7 @@ public:
 	static String^ calculateCRC32(String^ file);
 	static int getDepth(String^ path, String^ root, Boolean isFile);
 	static String^ getRelativePath(String^ path, String^ basePath);
+	
 	
 protected:
 	property SynchiveDirectory^ root;

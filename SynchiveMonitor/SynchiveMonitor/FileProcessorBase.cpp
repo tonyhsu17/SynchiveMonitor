@@ -22,6 +22,7 @@ FileProcessorBase::FileProcessorBase(String ^ dirPath)
 }
 
 
+
 void FileProcessorBase::readinIDs()
 {
 	Console::WriteLine("@readinIDs");
@@ -198,14 +199,11 @@ FileProcessorBase::SynchiveFile ^ FileProcessorBase::getSynchiveFile(String ^ id
 }
 
 
-
 // Get the UniqueID of a directory.
 String ^ FileProcessorBase::getDirectoryUniqueID(String ^ filePath, int level, String ^ rootPath)
 {
 	return "~" + level + ": " + filePath->Substring(rootPath->Length);
 }
-
-
 
 
 String ^ FileProcessorBase::calculateCRC32(String ^ file)
@@ -238,7 +236,7 @@ int FileProcessorBase::getDepth(String ^ path, String ^ root, Boolean isFile)
 			depth--; // strip out empty ones
 		}
 	}
-	Console::WriteLine("@depth: " + depth + " - path: " + path + " root: " + root + " isFile: " + isFile);
+	//Console::WriteLine("@depth: " + depth + " - path: " + path + " root: " + root + " isFile: " + isFile);
 	return depth;
 }
 
@@ -246,4 +244,9 @@ String^ FileProcessorBase::getRelativePath(String^ path, String^ basePath)
 {
 	
 	return path->Substring(basePath->Length);
+}
+
+bool FileProcessorBase::doesRootIDFileExist()
+{
+	return File::Exists(root->path);
 }

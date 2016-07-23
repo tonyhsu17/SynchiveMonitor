@@ -98,7 +98,7 @@ String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ p
 	if(type == SchedulerManager::Query::oneTime)
 	{
 		Process^ p = gcnew Process();
-		ProcessStartInfo^ ps = gcnew ProcessStartInfo(kStoragePath + kFileName, "\"" + path + "\"");
+		ProcessStartInfo^ ps = gcnew ProcessStartInfo(kStoragePath + kFileName, kSpecialKeyword + " \"" + path + "\"");
 		ps->WindowStyle = Diagnostics::ProcessWindowStyle::Hidden;
 		p->StartInfo = ps;
 		p->Start();
@@ -111,7 +111,7 @@ String^ SchedulerManager::executeCommand(SchedulerManager::Query type, String^ p
 		ProcessStartInfo^ ps = gcnew ProcessStartInfo("schtasks", arguments);
 		ps->RedirectStandardOutput = true;
 		ps->UseShellExecute = false;
-		//ps->WindowStyle = Diagnostics::ProcessWindowStyle::Hidden;
+		ps->WindowStyle = Diagnostics::ProcessWindowStyle::Hidden;
 		p->StartInfo = ps;
 		p->Start();
 

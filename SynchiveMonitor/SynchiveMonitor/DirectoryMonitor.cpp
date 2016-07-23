@@ -101,7 +101,7 @@ void DirectoryMonitor::runWithLatest(String^ path)
 
 		Process^ p = gcnew Process();
 		ProcessStartInfo^ ps = gcnew ProcessStartInfo(newMonitorPath, kSpecialKeyword + " \"" + path + "\"");
-		//ps->WindowStyle = Diagnostics::ProcessWindowStyle::Hidden;
+		ps->WindowStyle = Diagnostics::ProcessWindowStyle::Hidden;
 		p->StartInfo = ps;
 		p->Start();
 

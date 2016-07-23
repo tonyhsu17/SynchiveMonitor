@@ -5,7 +5,7 @@
 
 #pragma once
 // TODO: reference additional headers your program requires here
-
+#include <cliext\vector>
 #include "Globals.h"
 #include <Windows.h>
 //#include <stdio.h>
@@ -17,3 +17,4 @@ using namespace System::Timers;
 using namespace System::Diagnostics;
 using namespace System::IO;
 using namespace Collections;
+using namespace cliext;

@@ -22,12 +22,10 @@ int main(array<System::String ^> ^args)
 	Console::WriteLine(L"Hello World");
 	Console::WriteLine("ArgsCount: " + args->Length);
 
-	//DirectoryMonitor^ mon = gcnew DirectoryMonitor("E:\\Videos\\Anime");
+	//DirectoryMonitor^ mon = gcnew DirectoryMonitor("D:\\Synchive Monitor Test Folder");
 	//DirectoryMonitor^ mon = gcnew DirectoryMonitor("D:\\TestB");
 
 	//mon->run();
-	
-	//String^ output = system("schtasks /query /fo list");
 	
 	/*
 	if args > 1
@@ -35,7 +33,6 @@ int main(array<System::String ^> ^args)
 			that means create new process and monitor that directory
 		else
 			allow command line/input
-
 	*/
 	///*
 	SchedulerManager^ manager = gcnew SchedulerManager();
