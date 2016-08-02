@@ -248,5 +248,5 @@ String^ FileProcessorBase::getRelativePath(String^ path, String^ basePath)
 
 bool FileProcessorBase::doesRootIDFileExist()
 {
-	return File::Exists(root->path);
+	return File::Exists(root->path + "\\" + kIDFileName);
 }

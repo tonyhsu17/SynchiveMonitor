@@ -90,6 +90,7 @@ void DirectoryManagement::fileDeleted(FileSystemEventArgs ^ e)
 
 void DirectoryManagement::fileRenamed(RenamedEventArgs ^ e)
 {
+	Console::WriteLine("FileRenamed to: " + e->FullPath + " from " + e->OldFullPath);
 	// spoof a file created event in case of created file not processed yet gets renamed.
 	FileSystemEventArgs^ spoofedCreated = gcnew FileSystemEventArgs(WatcherChangeTypes::Created, e->FullPath->Substring(0, e->FullPath->Length - e->Name->Length) , e->Name);
 	fileCreated(spoofedCreated);
@@ -159,22 +160,19 @@ void DirectoryManagement::processQueue()
 				String^ id = getDirectoryUniqueID(path, depth, root->path);
 				Hashtable^ test = (Hashtable^)directoryList[id];
 				// don't process is directory already exist
-				if(directoryList->Contains(id))
+				if(!directoryList->Contains(id))
 				{
-					continue;
+					array<DirectoryInfo^>^ subDirs = info->GetDirectories();
+					for each(DirectoryInfo^ d in subDirs)
+					{
+						processingQueue->Enqueue(d->FullName);
+					}
+					array<FileInfo^>^ files = info->GetFiles();
+					for each(FileInfo^ f in files)
+					{
+						processingQueue->Enqueue(f->FullName);
+					}
 				}
-
-				array<DirectoryInfo^>^ subDirs = info->GetDirectories();
-				for each(DirectoryInfo^ d in subDirs)
-				{
-					processingQueue->Enqueue(d->FullName);
-				}
-				array<FileInfo^>^ files = info->GetFiles();
-				for each(FileInfo^ f in files)
-				{
-					processingQueue->Enqueue(f->FullName);
-				}
-
 				delete info;
 			}
 			else if (File::Exists(path))
