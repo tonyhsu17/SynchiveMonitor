@@ -1,6 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#define kVersion "0.5"
+#define kVersion "0.6"
 
 #define kIDFileName "~listOfFilesInCRC.txt"
 #define kDirLinePrefix "~"
@@ -15,6 +15,8 @@
 #define kScheduledTimer 1 * kMinute
 
 #define kCRC32Length 8
+
+#define kLocationsFile "SynchiveMonitor_Locations.ini"
 
 #define kEventSchedulerBase "Synchive"
 #define kSlashReplacement "%@%@%"

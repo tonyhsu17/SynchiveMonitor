@@ -22,7 +22,6 @@ private:
 	property Timer^ timer;
 	static void handleTimer(Object^ sender, ElapsedEventArgs^ e);
 
-	void runWithLatest(String ^ path);
 
 };
 

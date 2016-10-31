@@ -60,6 +60,9 @@
     <ClInclude Include="SchedulerManager.h">
       <Filter>Header Files\schedulerManagement</Filter>
     </ClInclude>
+    <ClInclude Include="LocationsManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
@@ -90,6 +93,9 @@
     </ClCompile>
     <ClCompile Include="SchedulerManager.cpp">
       <Filter>Source Files\schedulerManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="LocationsManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

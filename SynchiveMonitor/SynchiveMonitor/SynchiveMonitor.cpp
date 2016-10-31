@@ -1,7 +1,7 @@
 ﻿// SynchiveMonitor.cpp : main project file.
 #include "stdafx.h"
 #include "DirectoryMonitor.h"
-#include "SchedulerManager.h"
+#include "LocationsManager.h"
 #include "CRC32.h"
 
 using namespace System;
@@ -23,7 +23,7 @@ int main(array<System::String ^> ^args)
 	Console::WriteLine("ArgsCount: " + args->Length);
 
 	//DirectoryMonitor^ mon = gcnew DirectoryMonitor("D:\\Synchive Monitor Test Folder");
-	//DirectoryMonitor^ mon = gcnew DirectoryMonitor("D:\\TestB");
+	//DirectoryMonitor^ mon = gcnew DirectoryMonitor("E:\\Videos\\Anime");
 
 	//mon->run();
 	
@@ -35,7 +35,7 @@ int main(array<System::String ^> ^args)
 			allow command line/input
 	*/
 	///*
-	SchedulerManager^ manager = gcnew SchedulerManager();
+	LocationsManager^ manager = gcnew LocationsManager();
 	
 	if (args->Length == 0)
 	{
@@ -65,7 +65,8 @@ int main(array<System::String ^> ^args)
 			else if (str->ToLower()->StartsWith("onetime"))
 			{
 				splitStr = str->Split(filter, 2);
-				output = manager->oneTime(splitStr[1]);
+				output = "Monitoring " + splitStr[1];
+				manager->startProcess(splitStr[1]);
 			}
 			else if (str->ToLower()->StartsWith("list"))
 			{
@@ -73,7 +74,8 @@ int main(array<System::String ^> ^args)
 			}
 			else if (str->ToLower()->StartsWith("removeall"))
 			{
-				output = manager->removeAll();
+				output = "";
+				manager->removeAll();
 			}
 			else if (str->ToLower()->StartsWith("remove"))
 			{
