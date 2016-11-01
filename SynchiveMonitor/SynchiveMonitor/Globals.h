@@ -1,6 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#define kVersion "0.6"
+#define kVersion "0.7"
 
 #define kIDFileName "~listOfFilesInCRC.txt"
 #define kDirLinePrefix "~"
@@ -25,6 +25,7 @@
 
 #define kStoragePath (Environment::GetFolderPath(Environment::SpecialFolder::ApplicationData) + "\\Synchive\\")
 #define kFileNamePrefix "SynchiveMonitor_"
+#define kFileNameVersionPrefix (kFileNamePrefix + "v")
 #define kFileNameExtension ".exe"
 #define kFileName (kFileNamePrefix + "v" + kVersion + kFileNameExtension)
 

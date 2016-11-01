@@ -125,7 +125,7 @@ void LocationsManager::runWithLatest(String^ path)
 
 	for each(FileInfo^ fInfo in dirInfo->EnumerateFiles(kFileNamePrefix + "*"))
 	{
-		if(fInfo->Name != kFileName)
+		if(!fInfo->Name->StartsWith(kFileNameVersionPrefix))
 		{
 			continue;
 		}
