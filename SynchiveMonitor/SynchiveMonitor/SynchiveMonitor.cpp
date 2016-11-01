@@ -84,11 +84,10 @@ int main(array<System::String ^> ^args)
 			}
 			else
 			{
-				continue;
+				
 			}
-
 			Console::WriteLine("Output:\n" + output);
-			Console::Write("\nInput: ");
+			Console::Write("Input: ");
 		}
 		delete filter;
 	}
