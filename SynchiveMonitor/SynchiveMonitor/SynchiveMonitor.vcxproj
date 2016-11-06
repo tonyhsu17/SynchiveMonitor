@@ -142,10 +142,12 @@
     <ClInclude Include="FileProcessorBase.h" />
     <ClInclude Include="LocationsManager.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="SchedulerManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="DirectoryManagement.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="SynchiveMonitorController.h" />
+    <ClInclude Include="Terminal.h" />
+    <ClInclude Include="WinTaskScheduler.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />
@@ -156,7 +158,6 @@
     <ClCompile Include="DirectoryMonitor.cpp" />
     <ClCompile Include="FileProcessorBase.cpp" />
     <ClCompile Include="LocationsManager.cpp" />
-    <ClCompile Include="SchedulerManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -165,6 +166,9 @@
     </ClCompile>
     <ClCompile Include="DirectoryManagement.cpp" />
     <ClCompile Include="SynchiveMonitor.cpp" />
+    <ClCompile Include="SynchiveMonitorController.cpp" />
+    <ClCompile Include="Terminal.cpp" />
+    <ClCompile Include="WinTaskScheduler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />

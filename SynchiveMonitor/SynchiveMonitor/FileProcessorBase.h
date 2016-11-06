@@ -35,7 +35,6 @@ public:
 protected:
 	property SynchiveDirectory^ root;
 private:
-	property Hashtable^ directoyMapping;
 	property StreamReader^ reader;
 	property Stack^ directoriesToProcess;
 	

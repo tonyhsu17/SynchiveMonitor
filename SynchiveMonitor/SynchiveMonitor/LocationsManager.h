@@ -9,6 +9,7 @@ ref class LocationsManager
 {
 public:
 	LocationsManager();
+	~LocationsManager();
 	String^ startMonitoringLocations();
 
 	String ^ newLocation(String ^ path);

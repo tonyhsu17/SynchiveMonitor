@@ -31,3 +31,6 @@
 
 
 #define kSpecialKeyword "-monitor"
+#define kStartAllKeyword "-startAll"
+
+

@@ -3,7 +3,6 @@
 #include "stdafx.h"
 #include "Globals.h"
 #include "DirectoryManagement.h"
-#include "SchedulerManager.h"
 
 ref class DirectoryMonitor
 {

@@ -4,7 +4,6 @@
 
 FileProcessorBase::FileProcessorBase(String ^ dirPath)
 {
-	directoyMapping = gcnew Hashtable();
 	try
 	{
 		//reader = gcnew StreamReader(path);

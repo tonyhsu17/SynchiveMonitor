@@ -13,6 +13,11 @@ LocationsManager::LocationsManager()
 	validateSynchiveMonitorLocations();
 }
 
+LocationsManager::~LocationsManager()
+{
+	delete processPath;
+}
+
 String^ LocationsManager::startMonitoringLocations()
 {
 	if(!File::Exists(kStoragePath + kLocationsFile))
@@ -41,6 +46,7 @@ String^ LocationsManager::newLocation(String^ path)
 	{
 		return "Bad Path";
 	}
+	StreamReader temp(kStoragePath + kLocationsFile);
 	StreamReader^ sc = gcnew StreamReader(kStoragePath + kLocationsFile);
 	String^ str;
 	while((str = sc->ReadLine()) != nullptr)
@@ -52,7 +58,7 @@ String^ LocationsManager::newLocation(String^ path)
 		}
 	}
 	sc->Close();
-	
+	delete sc;
 	// if location not already monitoed, write to file and monitor
 	StreamWriter^ sw = gcnew StreamWriter(kStoragePath + kLocationsFile, true);
 	sw->WriteLine(path);
