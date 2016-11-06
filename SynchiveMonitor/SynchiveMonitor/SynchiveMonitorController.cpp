@@ -8,6 +8,7 @@
 SynchiveMonitorController::SynchiveMonitorController(array<String ^> ^args)
 {
 	this->args = args;
+	locManager = gcnew LocationsManager();
 }
 
 SynchiveMonitorController::~SynchiveMonitorController()
@@ -21,6 +22,8 @@ void SynchiveMonitorController::run()
 {
 	if(args->Length > 0 && args[0] == kSpecialKeyword) // monitor location
 	{
+		delete locManager; // remove unneeded allocation
+
 		String^ path = args[1];
 		for(int i = 2; i < args->Length; i++)
 		{
@@ -33,7 +36,6 @@ void SynchiveMonitorController::run()
 	}
 	else if(args->Length > 0 && args[0] == kStartAllKeyword) // start monitoring all locations
 	{
-		locManager = gcnew LocationsManager();
 		locManager->startMonitoringLocations(); //creates new processes
 		delete locManager;
 		delete locManager;
@@ -55,5 +57,26 @@ void SynchiveMonitorController::startTerminal()
 
 void SynchiveMonitorController::handleTerminalDelegate(TerminalDelegateType type, String ^ location)
 {
-	throw gcnew System::NotImplementedException();
+	switch(type)
+	{
+	case TerminalDelegateType::MonitorNewLocation:
+		terminal->writeLine(locManager->newLocation(location, true));
+		break;
+	case TerminalDelegateType::MonitorLocationOnce:
+		terminal->writeLine(locManager->newLocation(location, false));
+		break;
+	case TerminalDelegateType::ListLocations:
+		terminal->writeLine("Monitoring Locations:");
+		terminal->writeLine(locManager->listLocations());
+		break;
+	case TerminalDelegateType::RemoveLocation:
+		terminal->writeLine("Removed: " + locManager->removeLocation(location));
+		break;
+	case TerminalDelegateType::RemoveAllLocations:
+		terminal->writeLine("All Locations Removed");
+		locManager->removeAll();
+		break;
+	default:
+		break;
+	}
 }

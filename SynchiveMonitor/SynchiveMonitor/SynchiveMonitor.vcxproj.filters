@@ -60,9 +60,6 @@
     <ClInclude Include="DirectoryMonitor.h">
       <Filter>Header Files\fileManagement</Filter>
     </ClInclude>
-    <ClInclude Include="LocationsManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Terminal.h">
       <Filter>Header Files\ui</Filter>
     </ClInclude>
@@ -77,6 +74,9 @@
     </ClInclude>
     <ClInclude Include="SynchiveMonitorController.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LocationsManager.h">
+      <Filter>Header Files\fileManagement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

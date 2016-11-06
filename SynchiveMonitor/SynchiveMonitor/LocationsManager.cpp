@@ -8,128 +8,119 @@ LocationsManager::LocationsManager()
 	GetModuleFileName(NULL, buffer, 1024);
 
 	processPath = gcnew String(buffer);
-	Console::WriteLine(processPath);
+	//Console::WriteLine(processPath);
+	locationList = gcnew ArrayList();
+	readInLocations();
+
 	validateSynchiveMonitorFile();
 	validateSynchiveMonitorLocations();
 }
 
 LocationsManager::~LocationsManager()
 {
+	delete locationList;
 	delete processPath;
 }
 
-String^ LocationsManager::startMonitoringLocations()
+void LocationsManager::readInLocations()
 {
-	if(!File::Exists(kStoragePath + kLocationsFile))
-	{
-		return "No directories found within file";
-	}
-
-	String^ output = "";
-	
-	StreamReader^ sc = gcnew StreamReader(kStoragePath + kLocationsFile);
+	StreamReader sr(kStoragePath + kLocationsFile);
 	String^ str;
-	while((str = sc->ReadLine()) != nullptr)
+
+	while((str = sr.ReadLine()) != nullptr)
 	{
-		//start monitoring str
-		startProcess(str);
-		output += "Monitoring: " + str + "\n";
+		locationList->Add(str->ToLower());
 	}
-	sc->Close();
+	sr.Close();
 }
 
-// creates a new task in task scheduler that will run on login
-String^ LocationsManager::newLocation(String^ path)
+void LocationsManager::startMonitoringLocations()
 {
-	path = normalizeSlashes(path);
+	for(int i = 0; i < locationList->Count; i++)
+	{
+		runWithLatest((String^)locationList[i]);
+	}
+}
+
+// creates a new task in task scheduler that will run on login, isPersistent = true = run on logon
+String^ LocationsManager::newLocation(String^ path, bool isPersistent)
+{
 	if(!Directory::Exists(path))
 	{
 		return "Bad Path";
 	}
-	StreamReader temp(kStoragePath + kLocationsFile);
-	StreamReader^ sc = gcnew StreamReader(kStoragePath + kLocationsFile);
-	String^ str;
-	while((str = sc->ReadLine()) != nullptr)
+	path = normalizeSlashes(path);
+
+	if(listContains(path->ToLower()))
 	{
-		if(str == path)
-		{
-			sc->Close();
-			return "Path already monitored";
-		}
+		return "Path already monitored";
+	};
+
+	if(isPersistent) // if location not already monitored, write to file and monitor
+	{
+		StreamWriter sw(kStoragePath + kLocationsFile, true);
+		sw.WriteLineAsync(path);
+		sw.Close();
+
+		locationList->Add(path);
 	}
-	sc->Close();
-	delete sc;
-	// if location not already monitoed, write to file and monitor
-	StreamWriter^ sw = gcnew StreamWriter(kStoragePath + kLocationsFile, true);
-	sw->WriteLine(path);
-	startProcess(path);
-	sw->Close();
+	
+	runWithLatest(path);
 	return "Monitoring " + path;
 }
 
 // removes a specific location from task scheduler
 String^ LocationsManager::removeLocation(String^ path)
 {
-	path = normalizeSlashes(path);
-	String^ locs = "";
-	StreamReader^ sc = gcnew StreamReader(kStoragePath + kLocationsFile);
-	String^ str;
-	while((str = sc->ReadLine()) != nullptr)
-	{
-		if(str == path)
-		{
-			// delete location
-			// check with absolute path and check final path name for match (if single match delete that one)
-			// return deleted path
-			continue;
-		}
-		locs += str + "\n";
-	}
-	sc->Close();
+	path = normalizeSlashes(path)->ToLower();
 
-	//TODO finish, rewrite file 
-	//StreamWriter^ sw = gcnew StreamWriter(kStoragePath + kLocationsFile);
-	
-	return path + " removed";
+	if(!listContains(path->ToLower()))
+	{
+		return "Location not found";
+	}
+
+	String^ locs = "";
+	StreamWriter sw(kStoragePath + kLocationsFile);
+	String^ str;
+
+	for(int i = 0; i < locationList->Count; i++)
+	{
+		sw.WriteLineAsync((String^)locationList[i]);
+	}
+	sw.Close();
+	return path;
 }
 
 // all scheduled task
 void LocationsManager::removeAll()
 {
-	// delete file
+	delete locationList;
+	locationList = gcnew ArrayList;
+	FileStream^ stream = File::Create(kStoragePath + kLocationsFile);
+	stream->Close();
 }
 
 // list all scheduled task currently being monitored
 String ^ LocationsManager::listLocations()
 {
 	String^ finalOutput = "";
-	String^ locs = "";
-	StreamReader^ sc = gcnew StreamReader(kStoragePath + kLocationsFile);
-	String^ str;
-	while((str = sc->ReadLine()) != nullptr)
+
+	for(int i = 0; i < locationList->Count; i++)
 	{
-		finalOutput += str + "\n";
+		finalOutput += locationList[i] + "\n";
 	}
-	sc->Close();
 	return finalOutput;
-}
-
-
-void LocationsManager::startProcess(String^ path)
-{
-	runWithLatest(path);
 }
 
 void LocationsManager::runWithLatest(String^ path)
 {
 	path = normalizeSlashes(path);
-	DirectoryInfo^ dirInfo = gcnew DirectoryInfo(kStoragePath);
+	DirectoryInfo dirInfo(kStoragePath);
 	String^ latestVersion = kVersion;
-	array<String^>^ filter = gcnew array<String^>(1); // required otherwise split returns more than max substrings
-	filter[0] = "_v";
+	array<String^>^ filter = {"_v"}; // required otherwise split returns more than max substrings
 	String^ extension = kFileNameExtension;
 
-	for each(FileInfo^ fInfo in dirInfo->EnumerateFiles(kFileNamePrefix + "*"))
+	for each(FileInfo^ fInfo in dirInfo.EnumerateFiles(kFileNamePrefix + "*"))
 	{
 		if(!fInfo->Name->StartsWith(kFileNameVersionPrefix))
 		{
@@ -148,9 +139,10 @@ void LocationsManager::runWithLatest(String^ path)
 
 	Process^ p = gcnew Process();
 	ProcessStartInfo^ ps = gcnew ProcessStartInfo(newMonitorPath, kSpecialKeyword + " \"" + path + "\"");
-	ps->WindowStyle = Diagnostics::ProcessWindowStyle::Hidden;
+	//ps->WindowStyle = Diagnostics::ProcessWindowStyle::Hidden;
 	p->StartInfo = ps;
 	p->Start();
+	//TODO check if required to delete or create on stack
 }
 
 // ensure SynchiveMonitor.exe exist in storage
@@ -201,4 +193,16 @@ String^ LocationsManager::normalizeSlashes(String^ path)
 {
 	String^ converted = path->Replace("/", "\\");
 	return converted;
+}
+
+bool LocationsManager::listContains(String^ path)
+{
+	for(int i = 0; i < locationList->Count; i++)
+	{
+		if((String^)locationList[i] == path)
+		{
+			return true;
+		}
+	}
+	return false;
 }

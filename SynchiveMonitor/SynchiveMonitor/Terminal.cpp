@@ -30,11 +30,11 @@ void Terminal::runTerminal()
 			splitStr = str->Split(filter, 2);
 			sendToDelegate(TerminalDelegateType::MonitorLocationOnce, splitStr[1]);
 		}
-		else if(str->ToLower()->StartsWith("list "))
+		else if(str->ToLower()->StartsWith("list"))
 		{
 			sendToDelegate(TerminalDelegateType::ListLocations, nullptr);
 		}
-		else if(str->ToLower()->StartsWith("removeall "))
+		else if(str->ToLower()->StartsWith("removeall"))
 		{
 			sendToDelegate(TerminalDelegateType::RemoveAllLocations, nullptr);
 		}
