@@ -2,6 +2,7 @@
 #include "Terminal.h"
 #include "LocationsManager.h"
 #include "DirectoryMonitor.h"
+#include "WinTaskScheduler.h"
 
 ref class SynchiveMonitorController
 {

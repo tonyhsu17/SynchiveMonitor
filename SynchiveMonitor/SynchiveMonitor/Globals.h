@@ -18,19 +18,19 @@
 
 #define kLocationsFile "SynchiveMonitor_Locations.ini"
 
-#define kEventSchedulerBase "Synchive"
-#define kSlashReplacement "%@%@%"
-#define kColonReplacement "!#!#!"
-#define kSpaceReplacement "@#@#@"
 
 #define kStoragePath (Environment::GetFolderPath(Environment::SpecialFolder::ApplicationData) + "\\Synchive\\")
 #define kFileNamePrefix "SynchiveMonitor_"
 #define kFileNameVersionPrefix (kFileNamePrefix + "v")
 #define kFileNameExtension ".exe"
-#define kFileName (kFileNamePrefix + "v" + kVersion + kFileNameExtension)
+#define kFileName (kFileNameVersionPrefix + kVersion + kFileNameExtension)
 
 
 #define kSpecialKeyword "-monitor"
 #define kStartAllKeyword "-startAll"
 
+
+#define kEventSchedulerFolder "Synchive"
+#define kEventSchTskPrefix (kEventSchedulerFolder + "\\" + kFileNameVersionPrefix)
+#define kEventSchTskName (kEventSchTskPrefix + kVersion)
 

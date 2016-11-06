@@ -60,6 +60,8 @@ void SynchiveMonitorController::handleTerminalDelegate(TerminalDelegateType type
 	switch(type)
 	{
 	case TerminalDelegateType::MonitorNewLocation:
+		//TODO: add scheduler if necessary
+		terminal->writeLine(WinTaskScheduler::createOnLogonTask());
 		terminal->writeLine(locManager->newLocation(location, true));
 		break;
 	case TerminalDelegateType::MonitorLocationOnce:
@@ -70,9 +72,11 @@ void SynchiveMonitorController::handleTerminalDelegate(TerminalDelegateType type
 		terminal->writeLine(locManager->listLocations());
 		break;
 	case TerminalDelegateType::RemoveLocation:
+		// maybe remove scheduler if last one?
 		terminal->writeLine("Removed: " + locManager->removeLocation(location));
 		break;
 	case TerminalDelegateType::RemoveAllLocations:
+		//TODO: remove scheduler
 		terminal->writeLine("All Locations Removed");
 		locManager->removeAll();
 		break;

@@ -59,7 +59,10 @@ void Terminal::runTerminal()
 
 void Terminal::writeLine(String^ str)
 {
-	Console::WriteLine(str);
+	if(str->Length > 0)
+	{
+		Console::WriteLine(str);
+	}
 }
 
 void Terminal::sendToDelegate(TerminalDelegateType type, String^ location)

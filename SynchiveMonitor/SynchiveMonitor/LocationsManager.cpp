@@ -142,7 +142,7 @@ void LocationsManager::runWithLatest(String^ path)
 	//ps->WindowStyle = Diagnostics::ProcessWindowStyle::Hidden;
 	p->StartInfo = ps;
 	p->Start();
-	//TODO check if required to delete or create on stack
+	//TODO: check if required to delete or create on stack
 }
 
 // ensure SynchiveMonitor.exe exist in storage

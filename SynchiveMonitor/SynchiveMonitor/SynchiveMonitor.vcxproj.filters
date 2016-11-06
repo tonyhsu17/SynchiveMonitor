@@ -40,6 +40,9 @@
     <Filter Include="Header Files\fileManagement\IDFileManagement">
       <UniqueIdentifier>{a8159ee6-dc70-4283-a7d7-b60a655c1c89}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\fileManagement\IDFileMangement">
+      <UniqueIdentifier>{05fa75e1-c1be-4d6b-bb71-1f7829cc4c8a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -91,20 +94,11 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files\support</Filter>
     </ClCompile>
-    <ClCompile Include="FileProcessorBase.cpp">
-      <Filter>Source Files\fileManagement</Filter>
-    </ClCompile>
     <ClCompile Include="CRC32.cpp">
       <Filter>Source Files\support</Filter>
     </ClCompile>
-    <ClCompile Include="DirectoryManagement.cpp">
-      <Filter>Source Files\fileManagement</Filter>
-    </ClCompile>
     <ClCompile Include="DirectoryMonitor.cpp">
       <Filter>Source Files\fileManagement</Filter>
-    </ClCompile>
-    <ClCompile Include="LocationsManager.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Terminal.cpp">
       <Filter>Source Files\ui</Filter>
@@ -117,6 +111,15 @@
     </ClCompile>
     <ClCompile Include="SynchiveMonitor.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LocationsManager.cpp">
+      <Filter>Source Files\fileManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="FileProcessorBase.cpp">
+      <Filter>Source Files\fileManagement\IDFileMangement</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectoryManagement.cpp">
+      <Filter>Source Files\fileManagement\IDFileMangement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
