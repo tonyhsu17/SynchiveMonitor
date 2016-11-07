@@ -19,7 +19,6 @@ int main(array<System::String ^> ^args)
 {
 	//DirectoryMonitor^ mon = gcnew DirectoryMonitor("D:\\Synchive Monitor Test Folder");
 	//mon->run();
-
 	SynchiveMonitorController^ controller = gcnew SynchiveMonitorController(args);
 	controller->run();
 	delete controller;

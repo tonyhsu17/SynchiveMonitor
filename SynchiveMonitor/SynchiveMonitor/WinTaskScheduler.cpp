@@ -10,7 +10,7 @@ String^ WinTaskScheduler::createOnLogonTask()
 	}
 	
 	String^ filePath = kStoragePath + kFileName;
-	String^ args = "/create /tn " + kEventSchTskName + " /tr \"" + (filePath + " " + kSpecialKeyword) + "\" /sc onlogon /f";
+	String^ args = "/create /tn " + kEventSchTskName + " /tr \"" + (filePath + " " + kStartAllKeyword) + "\" /sc onlogon /f";
 	return executeTaskSchCommandLine(args);
 }
 
