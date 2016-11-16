@@ -45,6 +45,7 @@ void LocationsManager::startMonitoringLocations()
 // creates a new task in task scheduler that will run on login, isPersistent = true = run on logon
 String^ LocationsManager::newLocation(String^ path, bool isPersistent)
 {
+	// make sure it is a valid directory
 	if(!Directory::Exists(path))
 	{
 		return "Bad Path";
@@ -81,7 +82,6 @@ String^ LocationsManager::removeLocation(String^ path)
 
 	String^ locs = "";
 	StreamWriter sw(kStoragePath + kLocationsFile);
-	String^ str;
 
 	for(int i = 0; i < locationList->Count; i++)
 	{
@@ -153,11 +153,11 @@ void LocationsManager::validateSynchiveMonitorFile()
 		Directory::CreateDirectory(kStoragePath);
 		File::Copy(processPath, kStoragePath + kFileName); // will not override existing file
 	}
-	catch(UnauthorizedAccessException^ e) // file in use
+	catch(UnauthorizedAccessException^) // file in use
 	{
 
 	}
-	catch(IOException^ e)
+	catch(IOException^)
 	{
 
 	}
@@ -176,19 +176,18 @@ void LocationsManager::validateSynchiveMonitorLocations()
 			File::Create(kStoragePath + kLocationsFile);
 		}
 	}
-	catch(UnauthorizedAccessException^ e) // file in use
+	catch(UnauthorizedAccessException^) // file in use
 	{
 
 	}
-	catch(IOException^ e)
+	catch(IOException^)
 	{
-
+		
 	}
 	// TODO: check for latest version and use that one
 	//maybe delete old versions too?
 }
 
-// gets a unique taskname to reference
 String^ LocationsManager::normalizeSlashes(String^ path)
 {
 	String^ converted = path->Replace("/", "\\");
