@@ -10,17 +10,18 @@ LocationsManager::LocationsManager()
 	processPath = gcnew String(buffer);
 	//Console::WriteLine(processPath);
 	locationList = gcnew ArrayList();
-	readInLocations();
 
 	validateSynchiveMonitorFile();
 	validateSynchiveMonitorLocations();
+
+	readInLocations();
 }
 
 LocationsManager::~LocationsManager()
 {
 	delete locationList;
 	delete processPath;
-}
+} 
 
 void LocationsManager::readInLocations()
 {
@@ -173,7 +174,8 @@ void LocationsManager::validateSynchiveMonitorLocations()
 	{
 		if(!File::Exists(kStoragePath + kLocationsFile))
 		{
-			File::Create(kStoragePath + kLocationsFile);
+			FileStream^ fs = File::Create(kStoragePath + kLocationsFile);
+			fs->Close();
 		}
 	}
 	catch(UnauthorizedAccessException^) // file in use
@@ -184,8 +186,6 @@ void LocationsManager::validateSynchiveMonitorLocations()
 	{
 		
 	}
-	// TODO: check for latest version and use that one
-	//maybe delete old versions too?
 }
 
 String^ LocationsManager::normalizeSlashes(String^ path)

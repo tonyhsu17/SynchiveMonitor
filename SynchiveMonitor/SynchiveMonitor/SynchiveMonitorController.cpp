@@ -38,9 +38,6 @@ void SynchiveMonitorController::run()
 	{
 		locManager->startMonitoringLocations(); //creates new processes
 		delete locManager;
-		delete locManager;
-		delete locManager;
-		delete locManager;
 	}
 	else // show terminal
 	{
