@@ -3,7 +3,6 @@
 #include "stdafx.h"
 #include "Globals.h"
 #include "DirectoryManagement.h"
-#include "SchedulerManager.h"
 
 ref class DirectoryMonitor
 {
@@ -22,7 +21,6 @@ private:
 	property Timer^ timer;
 	static void handleTimer(Object^ sender, ElapsedEventArgs^ e);
 
-	void runWithLatest(String ^ path);
 
 };
 

@@ -4,7 +4,6 @@
 
 FileProcessorBase::FileProcessorBase(String ^ dirPath)
 {
-	directoyMapping = gcnew Hashtable();
 	try
 	{
 		//reader = gcnew StreamReader(path);
@@ -133,7 +132,7 @@ void FileProcessorBase::readFromIDFile(String ^ path, int baseDepth)
 		while (str != nullptr && !str->StartsWith(kDirLinePrefix))
 		{
 			array<String^>^ splitStr = str->Split(filter, 2); // [crc, name]
-
+			//Console::WriteLine(splitStr[1]);
 			if (splitStr->Length != 2)
 			{
 				sc->Close();

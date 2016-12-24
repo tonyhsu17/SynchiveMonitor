@@ -31,6 +31,18 @@
     <Filter Include="Header Files\schedulerManagement">
       <UniqueIdentifier>{a64914d5-d738-4b5d-a403-8818a33b0047}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ui">
+      <UniqueIdentifier>{85da3181-c23b-4af1-9dba-908d271be24b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ui">
+      <UniqueIdentifier>{ec088c95-02bc-4f29-ac2e-6c5b7a4c57c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\fileManagement\IDFileManagement">
+      <UniqueIdentifier>{a8159ee6-dc70-4283-a7d7-b60a655c1c89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\fileManagement\IDFileMangement">
+      <UniqueIdentifier>{05fa75e1-c1be-4d6b-bb71-1f7829cc4c8a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -42,23 +54,32 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files\support</Filter>
     </ClInclude>
-    <ClInclude Include="FileProcessorBase.h">
-      <Filter>Header Files\fileManagement</Filter>
-    </ClInclude>
     <ClInclude Include="Globals.h">
       <Filter>Header Files\support</Filter>
     </ClInclude>
     <ClInclude Include="CRC32.h">
       <Filter>Header Files\support</Filter>
     </ClInclude>
-    <ClInclude Include="DirectoryManagement.h">
-      <Filter>Header Files\fileManagement</Filter>
-    </ClInclude>
     <ClInclude Include="DirectoryMonitor.h">
       <Filter>Header Files\fileManagement</Filter>
     </ClInclude>
-    <ClInclude Include="SchedulerManager.h">
+    <ClInclude Include="Terminal.h">
+      <Filter>Header Files\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="WinTaskScheduler.h">
       <Filter>Header Files\schedulerManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="FileProcessorBase.h">
+      <Filter>Header Files\fileManagement\IDFileManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectoryManagement.h">
+      <Filter>Header Files\fileManagement\IDFileManagement</Filter>
+    </ClInclude>
+    <ClInclude Include="SynchiveMonitorController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LocationsManager.h">
+      <Filter>Header Files\fileManagement</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -73,23 +94,32 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files\support</Filter>
     </ClCompile>
-    <ClCompile Include="FileProcessorBase.cpp">
-      <Filter>Source Files\fileManagement</Filter>
-    </ClCompile>
     <ClCompile Include="CRC32.cpp">
       <Filter>Source Files\support</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectoryManagement.cpp">
-      <Filter>Source Files\fileManagement</Filter>
-    </ClCompile>
-    <ClCompile Include="SynchiveMonitor.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DirectoryMonitor.cpp">
       <Filter>Source Files\fileManagement</Filter>
     </ClCompile>
-    <ClCompile Include="SchedulerManager.cpp">
+    <ClCompile Include="Terminal.cpp">
+      <Filter>Source Files\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="WinTaskScheduler.cpp">
       <Filter>Source Files\schedulerManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="SynchiveMonitorController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SynchiveMonitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LocationsManager.cpp">
+      <Filter>Source Files\fileManagement</Filter>
+    </ClCompile>
+    <ClCompile Include="FileProcessorBase.cpp">
+      <Filter>Source Files\fileManagement\IDFileMangement</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectoryManagement.cpp">
+      <Filter>Source Files\fileManagement\IDFileMangement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
