@@ -21,7 +21,7 @@ DirectoryMonitor::DirectoryMonitor(String^ path)
 	monitor->EnableRaisingEvents = false;
 
 	// Add event handlers
-	//monitor->Changed += gcnew FileSystemEventHandler(DirectoryMonitor::fileChanged);
+	monitor->Changed += gcnew FileSystemEventHandler(DirectoryMonitor::fileChanged);
 	monitor->Created += gcnew FileSystemEventHandler(DirectoryMonitor::fileCreated);
 	monitor->Deleted += gcnew FileSystemEventHandler(DirectoryMonitor::fileDeleted);
 	monitor->Renamed += gcnew RenamedEventHandler(DirectoryMonitor::fileRenamed);
@@ -44,6 +44,11 @@ int DirectoryMonitor::run()
 		System::Threading::Thread::Sleep(60 * kMinute);
 	}
 	return 0;
+}
+
+void DirectoryMonitor::fileChanged(Object ^ sender, FileSystemEventArgs ^ e)
+{
+	manager->fileCreated(e);
 }
 
 void DirectoryMonitor::fileCreated(Object ^ sender, FileSystemEventArgs ^ e)

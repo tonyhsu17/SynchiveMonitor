@@ -10,6 +10,7 @@ public:
 	DirectoryMonitor(String^ path);
 	int run();
 
+	static void fileChanged(Object^ sender, FileSystemEventArgs^ e);
 	static void fileCreated(Object^ sender, FileSystemEventArgs^ e);
 	static void fileDeleted(Object^ sender, FileSystemEventArgs^ e);
 	static void fileRenamed(Object^ sender, RenamedEventArgs^ e);

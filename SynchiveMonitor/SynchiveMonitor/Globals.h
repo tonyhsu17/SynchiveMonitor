@@ -1,6 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#define kVersion "0.9"
+#define kVersion "0.10"
 
 #define kIDFileName "~listOfFilesInCRC.txt"
 #define kDirLinePrefix "~"

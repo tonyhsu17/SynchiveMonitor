@@ -17,7 +17,7 @@ using namespace System;
 // TODO allow killing specific monitoring process
 int main(array<System::String ^> ^args)
 {
-	//DirectoryMonitor^ mon = gcnew DirectoryMonitor("D:\\Synchive Monitor Test Folder");
+	//DirectoryMonitor^ mon = gcnew DirectoryMonitor("D:\\TestA");
 	//mon->run();
 	SynchiveMonitorController^ controller = gcnew SynchiveMonitorController(args);
 	controller->run();
